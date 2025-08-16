@@ -14,6 +14,6 @@ public partial class Match : Node
     {
         GD.Print("Match lost");
         stage.StopTrains();
-        defeat.GetNode<Control>("Conainer").Visible = true;
+        defeat.GetNode<Control>("Container").Visible = true;
     }
 }
