@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://4kraj3jvxem4"]
+[gd_scene load_steps=5 format=3 uid="uid://4kraj3jvxem4"]
 
-[ext_resource type="Script" uid="uid://cgru2gsqe8ope" path="res://Scripts/InputListener.cs" id="3_kln2b"]
 [ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://to378veyn535" path="res://Scripts/Stage/Stage.cs" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
@@ -15,9 +14,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 0.941176, 1)
-
-[node name="InputListener" type="Node" parent="."]
-script = ExtResource("3_kln2b")
 
 [node name="SceneComplete" type="Node" parent="."]
 script = ExtResource("4_rgh2o")

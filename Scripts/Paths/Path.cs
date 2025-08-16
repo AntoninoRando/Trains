@@ -8,6 +8,7 @@ public partial class Path : Node
     [Export] public PathFollow2D PathFollow;
     [Export] public EndPathArea End;
     [Export] public double Speed = 0.05;
+    [Export] public double SprintMultiplier = 2;
     #endregion -----------------------------------------------------------------
 
 
@@ -15,34 +16,33 @@ public partial class Path : Node
     public IEnumerable<Train> Trains =>
         PathFollow.GetChildren().Where(t => t is Train).Cast<Train>();
 
-    bool speeded;
-    Key assignedKey;
+    bool onSprint;
+    string assignedAction;
 
-
-    public override void _Input(InputEvent @event)
+    public void Sprint()
     {
-        if (Input.IsKeyPressed(assignedKey))
-        {
-            if (!speeded)
-            {
-                Speed *= 2;
-                speeded = true;
-            }
-        }
-        else
-        {
-            if (speeded)
-            {
-                Speed /= 2;
-                speeded = false;
-            }
-        }
+        if (onSprint) return;
+        Speed *= SprintMultiplier;
+        onSprint = true;
+    }
+
+    public void StopSprint()
+    {
+        if (!onSprint) return;
+        Speed /= SprintMultiplier;
+        onSprint = false;
+    }
+
+
+    public override void _Process(double delta)
+    {
+        PathFollow.ProgressRatio += (float)(Speed * delta);
     }
 
     /// <summary>
     /// Adds a train to this path.
     /// </summary>
-    public void AddTrain(Node2D train)
+    public void AddTrain(Train train)
     {
         if (train.GetParent() != null)
         {
@@ -53,14 +53,5 @@ public partial class Path : Node
             PathFollow.AddChild(train);
         }
         train.Position *= 0;
-        assignedKey = InputListener.TakeKey();
-
-        // var mover = new AutoMover();
-        // train.GetNode<AutoMover>("AutoMover").FollowPath2D = PathFollow;
-    }
-
-    public override void _Process(double delta)
-    {
-        PathFollow.ProgressRatio += (float)(Speed * delta);
     }
 }
