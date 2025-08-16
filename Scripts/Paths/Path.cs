@@ -5,6 +5,7 @@ public partial class Path : Node
     #region FIELDS -------------------------------------------------------------
     [Export] public Node2D Train;
     [Export] public PathFollow2D PathFollow;
+    [Export] public EndPathArea End;
     #endregion -----------------------------------------------------------------
 
 
