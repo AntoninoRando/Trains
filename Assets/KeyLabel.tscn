@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://vmfu8bjc0okt"]
 
-[ext_resource type="Texture2D" uid="uid://6hvyhsbjm3nq" path="res://Assets/KeyLabelBackground.png" id="1_gya33"]
+[ext_resource type="Texture2D" uid="uid://6hvyhsbjm3nq" path="res://Assets/KeyLabelBackground.png" id="1_5nqkm"]
 
 [node name="KeyLabel" type="Control"]
 custom_minimum_size = Vector2(80, 80)
@@ -11,7 +11,7 @@ anchors_preset = 0
 layout_mode = 0
 offset_right = 80.0
 offset_bottom = 84.0
-texture = ExtResource("1_gya33")
+texture = ExtResource("1_5nqkm")
 
 [node name="Label" type="RichTextLabel" parent="."]
 layout_mode = 1

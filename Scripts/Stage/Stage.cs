@@ -7,7 +7,7 @@ public partial class Stage : Node
     [Export] TrainsSpawner trainsSpawner;
     private readonly List<(Path, string)> paths = [];
     const int PATHS_LIMIT = 5;
-    PackedScene keyLabel = GD.Load<PackedScene>("res://Scenes/KeyLabel.tscn");
+    PackedScene keyLabel = GD.Load<PackedScene>("res://Assets/KeyLabel.tscn");
 
     readonly List<Control> keyLabels = [];
     readonly Queue<string> labelQueue = new();
@@ -47,6 +47,11 @@ public partial class Stage : Node
 
         labelQueue.Enqueue(action_key);
         TrySpawnLabel();
+    }
+
+    public void StopTrains()
+    {
+        paths.ForEach(x => x.Item1.Speed = 0);
     }
 
     async void TrySpawnLabel()

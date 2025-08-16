@@ -3,6 +3,7 @@ using Godot;
 public partial class Match : Node
 {
     [Export] Stage stage;
+    [Export] Node defeat;
 
     public override void _Ready()
     {
@@ -12,5 +13,7 @@ public partial class Match : Node
     void OnBump()
     {
         GD.Print("Match lost");
+        stage.StopTrains();
+        defeat.GetNode<Control>("Conainer").Visible = true;
     }
 }

@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://4kraj3jvxem4"]
+[gd_scene load_steps=6 format=3 uid="uid://4kraj3jvxem4"]
 
+[ext_resource type="Script" uid="uid://m5kqj42h4s2f" path="res://Scripts/Match/Match.cs" id="4_pbw6q"]
 [ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://to378veyn535" path="res://Scripts/Stage/Stage.cs" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
@@ -76,6 +77,65 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Stage" type="Node" parent="." node_paths=PackedStringArray("trainsSpawner")]
+[node name="Match" type="Node" parent="." node_paths=PackedStringArray("stage", "defeat")]
+script = ExtResource("4_pbw6q")
+stage = NodePath("Stage")
+defeat = NodePath("DefeatVeil")
+
+[node name="Stage" type="Node" parent="Match" node_paths=PackedStringArray("trainsSpawner")]
 script = ExtResource("5_jw32o")
-trainsSpawner = NodePath("../TrainsSpawner")
+trainsSpawner = NodePath("../../TrainsSpawner")
+
+[node name="DefeatVeil" type="Node" parent="Match"]
+
+[node name="Conainer" type="Control" parent="Match/DefeatVeil"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Match/DefeatVeil/Conainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.470588)
+
+[node name="LostText" type="RichTextLabel" parent="Match/DefeatVeil/Conainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/bold_italics_font_size = 200
+theme_override_font_sizes/italics_font_size = 200
+theme_override_font_sizes/mono_font_size = 200
+theme_override_font_sizes/normal_font_size = 200
+theme_override_font_sizes/bold_font_size = 200
+bbcode_enabled = true
+text = "[b]Defeat[/b]"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Retry" type="Button" parent="Match/DefeatVeil/Conainer"]
+layout_mode = 0
+offset_left = 510.0
+offset_top = 442.0
+offset_right = 560.0
+offset_bottom = 473.0
+text = "Retry"
+
+[node name="Exit" type="Button" parent="Match/DefeatVeil/Conainer"]
+layout_mode = 0
+offset_left = 583.0
+offset_top = 442.0
+offset_right = 633.0
+offset_bottom = 473.0
+text = "Exit"
