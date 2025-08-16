@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://4kraj3jvxem4"]
 
-[ext_resource type="PackedScene" uid="uid://431vf1hdo80s" path="res://Assets/OfTrains/TrainScene.tscn" id="1_r150o"]
-[ext_resource type="PackedScene" uid="uid://pywgdv44uks1" path="res://Assets/TrainsPaths/0001.tscn" id="2_idj7w"]
 [ext_resource type="Script" uid="uid://cgru2gsqe8ope" path="res://Scripts/InputListener.cs" id="3_kln2b"]
 [ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
+[ext_resource type="Script" uid="uid://to378veyn535" path="res://Scripts/Stage/Stage.cs" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
+[ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="5_v1gob"]
 
 [node name="Main" type="Node"]
 
@@ -16,30 +16,22 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 0.941176, 1)
 
-[node name="Train" parent="." instance=ExtResource("1_r150o")]
-position = Vector2(-56, 192)
-
-[node name="AutoMover" parent="Train" index="1" node_paths=PackedStringArray("followPath2D")]
-followPath2D = NodePath("../../Path0001/Path2D/PathFollow2D")
-
-[node name="Path0001" parent="." node_paths=PackedStringArray("Train") instance=ExtResource("2_idj7w")]
-Train = NodePath("../Train")
-
-[node name="InputListener" type="Node" parent="." node_paths=PackedStringArray("Train1")]
+[node name="InputListener" type="Node" parent="."]
 script = ExtResource("3_kln2b")
-Train1 = NodePath("../Train/AutoMover")
 
 [node name="SceneComplete" type="Node" parent="."]
 script = ExtResource("4_rgh2o")
 
-[node name="AroundBorderAnimation" type="Node" parent="." node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2", "path")]
+[node name="TrainsSpawner" type="Node" parent="."]
+script = ExtResource("5_v1gob")
+
+[node name="AroundBorderAnimation" type="Node" parent="." node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
 script = ExtResource("5_pbw6q")
 Top = NodePath("Top")
 Right = NodePath("Right")
 Bottom = NodePath("Bottom")
 Left = NodePath("Left")
 Left2 = NodePath("Left2")
-path = NodePath("../Path0001")
 
 [node name="Top" type="ColorRect" parent="AroundBorderAnimation"]
 anchors_preset = 10
@@ -88,5 +80,6 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[editable path="Train"]
-[editable path="Path0001"]
+[node name="Stage" type="Node" parent="." node_paths=PackedStringArray("trainsSpawner")]
+script = ExtResource("5_jw32o")
+trainsSpawner = NodePath("../TrainsSpawner")

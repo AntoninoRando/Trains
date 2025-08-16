@@ -9,12 +9,10 @@ public partial class CompleteAnimation : Node
     [Export] ColorRect Left;
     [Export] ColorRect Left2;
 
-    [Export] Path path;
 
 
     public override void _Ready()
     {
-        path.End.TrainArrived += Play;
         Top.Scale = new Vector2(0, 1);
         Right.Scale = new Vector2(1, 0);
         Bottom.Scale = new Vector2(0, 1);
