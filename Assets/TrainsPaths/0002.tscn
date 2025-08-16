@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://cu4p65blykxl2"]
+
+[ext_resource type="Script" uid="uid://5mlm1vbq58fv" path="res://Scripts/Paths/Path.cs" id="1_3s07r"]
+[ext_resource type="Script" uid="uid://ctnxtb32rne3w" path="res://Scripts/Paths/EndPathArea.cs" id="2_tns2u"]
+
+[sub_resource type="Curve2D" id="Curve2D_6x7a2"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 448, 704, 0, 0, 0, 0, 448, 512, 0, 0, 0, 0, 64, 512, 0, 0, 0, 0, 384, 192, 0, 0, 0, 0, 896, 64, 0, 0, 0, 0, 640, 384, 0, 0, 0, 0, 512, 384, 0, 0, 0, 0, 512, 512, 0, 0, 0, 0, 768, 576, 0, 0, 0, 0, 768, 448, 0, 0, 0, 0, 1088, 448, 0, 0, 0, 0, 1088, -64)
+}
+point_count = 12
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6yiot"]
+
+[node name="Path0002" type="Node" node_paths=PackedStringArray("PathFollow")]
+script = ExtResource("1_3s07r")
+PathFollow = NodePath("Path2D/PathFollow2D")
+
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_6x7a2")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(448, 704)
+rotation = -1.5708
+
+[node name="End" type="Area2D" parent="."]
+position = Vector2(1088, -8)
+script = ExtResource("2_tns2u")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="End"]
+shape = SubResource("RectangleShape2D_6yiot")

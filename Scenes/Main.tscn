@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://4kraj3jvxem4"]
+
+[ext_resource type="PackedScene" uid="uid://431vf1hdo80s" path="res://Assets/OfTrains/TrainScene.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://pywgdv44uks1" path="res://Assets/TrainsPaths/0001.tscn" id="2_idj7w"]
+[ext_resource type="Script" uid="uid://cgru2gsqe8ope" path="res://Scripts/InputListener.cs" id="3_kln2b"]
+[ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
+
+[node name="Main" type="Node"]
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0.941176, 1)
+
+[node name="Train" parent="." instance=ExtResource("1_r150o")]
+position = Vector2(-56, 192)
+
+[node name="AutoMover" parent="Train" index="1" node_paths=PackedStringArray("followPath2D")]
+followPath2D = NodePath("../../Path0001/Path2D/PathFollow2D")
+
+[node name="Path0001" parent="." node_paths=PackedStringArray("Train") instance=ExtResource("2_idj7w")]
+Train = NodePath("../Train")
+
+[node name="InputListener" type="Node" parent="." node_paths=PackedStringArray("Train1")]
+script = ExtResource("3_kln2b")
+Train1 = NodePath("../Train/AutoMover")
+
+[node name="SceneComplete" type="Node" parent="."]
+script = ExtResource("4_rgh2o")
+
+[node name="AroundBorderAnimation" type="Node" parent="."]
+
+[node name="Top" type="ColorRect" parent="AroundBorderAnimation"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 2.0
+grow_horizontal = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Left" type="ColorRect" parent="AroundBorderAnimation"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 2.0
+grow_vertical = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Right" type="ColorRect" parent="AroundBorderAnimation"]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+grow_horizontal = 0
+grow_vertical = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Bot" type="ColorRect" parent="AroundBorderAnimation"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(1, 0, 0, 1)
+
+[editable path="Train"]
+[editable path="Path0001"]
