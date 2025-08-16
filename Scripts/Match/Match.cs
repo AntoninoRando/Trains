@@ -5,6 +5,7 @@ public partial class Match : Node
     [Export] PackedScene stageScene;
     [Export] Node defeat;
     [Export] Label stageLabel;
+    [Export] CompleteAnimation completeAnimation;
 
     Stage stage;
     int stageNumber = 1;
@@ -28,6 +29,7 @@ public partial class Match : Node
 
     void OnStageCompleted()
     {
+        completeAnimation.Play();
         stage.QueueFree();
         stageNumber++;
         StartStage();

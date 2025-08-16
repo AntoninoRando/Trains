@@ -22,6 +22,7 @@ offset_left = -100.0
 offset_top = 10.0
 offset_right = -10.0
 offset_bottom = 30.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Stage 1"
 
 [node name="AroundBorderAnimation" type="Node" parent="." node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
@@ -79,11 +80,12 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Match" type="Node" parent="." node_paths=PackedStringArray("defeat", "stageLabel")]
+[node name="Match" type="Node" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation")]
 script = ExtResource("4_pbw6q")
 stageScene = ExtResource("5_jw32o")
 defeat = NodePath("DefeatVeil")
 stageLabel = NodePath("../StageLabel")
+completeAnimation = NodePath("../AroundBorderAnimation")
 
 [node name="DefeatVeil" type="Node" parent="Match"]
 
