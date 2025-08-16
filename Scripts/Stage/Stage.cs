@@ -59,9 +59,9 @@ public partial class Stage : Node
 
         var viewport = GetViewport().GetVisibleRect();
         const float size = 40f;
-        const float spacing = 10f;
+        const float spacing = 50f;
         var startY = viewport.Size.Y;
-        var finalY = viewport.Size.Y - size;
+        var finalY = viewport.Size.Y - size - 50;
 
         // start at bottom center
         label.Position = new Vector2(viewport.Size.X / 2 - size / 2, startY);
