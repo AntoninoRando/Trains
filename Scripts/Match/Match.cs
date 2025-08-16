@@ -2,12 +2,42 @@ using Godot;
 
 public partial class Match : Node
 {
-    [Export] Stage stage;
+    [Export] PackedScene stageScene;
     [Export] Node defeat;
+    [Export] Label stageLabel;
+    [Export] CompleteAnimation completeAnimation;
+
+    Stage stage;
+    int stageNumber = 1;
 
     public override void _Ready()
     {
+        defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
+        defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
+        StartStage();
+    }
+
+    void StartStage()
+    {
+        stage = stageScene.Instantiate<Stage>();
         stage.Bump += OnBump;
+        stage.Completed += OnStageCompleted;
+        AddChild(stage);
+        stage.CallDeferred(nameof(Stage.Begin));
+        UpdateLabel();
+    }
+
+    void OnStageCompleted()
+    {
+        completeAnimation.Play();
+        stage.QueueFree();
+        stageNumber++;
+        StartStage();
+    }
+
+    void UpdateLabel()
+    {
+        stageLabel.Text = $"Stage {stageNumber}";
     }
 
     void OnBump()
@@ -16,4 +46,15 @@ public partial class Match : Node
         stage.StopTrains();
         defeat.GetNode<Control>("Container").Visible = true;
     }
+
+    void OnRetry()
+    {
+        GetTree().ReloadCurrentScene();
+    }
+
+    void OnExit()
+    {
+        GetTree().ChangeSceneToFile("res://Scenes/MainMenu.tscn");
+    }
 }
+

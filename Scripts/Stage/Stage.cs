@@ -4,7 +4,7 @@ using Godot;
 
 public partial class Stage : Node
 {
-    [Export] TrainsSpawner trainsSpawner;
+    [Export] public TrainsSpawner trainsSpawner;
     private readonly List<(Path, string)> paths = [];
     const int PATHS_LIMIT = 5;
     PackedScene keyLabel = GD.Load<PackedScene>("res://Assets/KeyLabel.tscn");
@@ -15,10 +15,16 @@ public partial class Stage : Node
 
     public event Action<string> KeyRegistered;
     public event Action Bump;
+    public event Action Completed;
 
     public override void _Ready()
     {
         trainsSpawner.SpawnedTrain += RegisterTrain;
+    }
+
+    public void Begin()
+    {
+        trainsSpawner.StartStage();
     }
 
     public override void _Input(InputEvent @event)
@@ -44,6 +50,7 @@ public partial class Stage : Node
 
         var area = train.GetNode<TrainArea>("Area");
         area.BumpedTrain += () => Bump?.Invoke();
+        path.End.TrainArrived += OnTrainArrived;
 
         labelQueue.Enqueue(action_key);
         TrySpawnLabel();
@@ -52,6 +59,28 @@ public partial class Stage : Node
     public void StopTrains()
     {
         paths.ForEach(x => x.Item1.Speed = 0);
+    }
+
+    void OnTrainArrived()
+    {
+        StopTrains();
+        ClearPaths();
+        Completed?.Invoke();
+    }
+
+    void ClearPaths()
+    {
+        foreach (var (path, _) in paths)
+        {
+            path.QueueFree();
+        }
+        paths.Clear();
+        foreach (var label in keyLabels)
+        {
+            label.QueueFree();
+        }
+        keyLabels.Clear();
+        labelQueue.Clear();
     }
 
     async void TrySpawnLabel()
