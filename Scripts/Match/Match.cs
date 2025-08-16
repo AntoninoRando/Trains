@@ -7,12 +7,10 @@ public partial class Match : Node
     [Export] Label stageLabel;
 
     Stage stage;
-    TrainsSpawner trainsSpawner;
     int stageNumber = 1;
 
     public override void _Ready()
     {
-        trainsSpawner = GetNode<TrainsSpawner>("../TrainsSpawner");
         defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
         defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
         StartStage();
@@ -21,7 +19,6 @@ public partial class Match : Node
     void StartStage()
     {
         stage = stageScene.Instantiate<Stage>();
-        stage.trainsSpawner = trainsSpawner;
         stage.Bump += OnBump;
         stage.Completed += OnStageCompleted;
         AddChild(stage);

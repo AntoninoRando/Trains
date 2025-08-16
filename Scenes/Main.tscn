@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://4kraj3jvxem4"]
+[gd_scene load_steps=4 format=3 uid="uid://4kraj3jvxem4"]
 
 [ext_resource type="Script" uid="uid://m5kqj42h4s2f" path="res://Scripts/Match/Match.cs" id="4_pbw6q"]
-[ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
-[ext_resource type="PackedScene" path="res://Scenes/Stage.tscn" id="5_jw32o"]
+[ext_resource type="PackedScene" uid="uid://baqkmo3ip8xtn" path="res://Scenes/Stage.tscn" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
-[ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="5_v1gob"]
 
 [node name="Main" type="Node"]
 
@@ -16,17 +14,10 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 0.941176, 1)
 
-[node name="SceneComplete" type="Node" parent="."]
-script = ExtResource("4_rgh2o")
-
-[node name="TrainsSpawner" type="Node" parent="."]
-script = ExtResource("5_v1gob")
-
 [node name="StageLabel" type="Label" parent="."]
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
 offset_left = -100.0
 offset_top = 10.0
 offset_right = -10.0
