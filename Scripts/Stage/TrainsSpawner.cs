@@ -17,6 +17,11 @@ public partial class TrainsSpawner : Node
     public override void _Ready()
     {
         base._Ready();
+    }
+
+    public void StartStage()
+    {
+        TrainsData.Clear();
         Enqueue(train, path0001, 0);
         Enqueue(train, path0002, 0);
     }

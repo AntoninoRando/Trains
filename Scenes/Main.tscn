@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://m5kqj42h4s2f" path="res://Scripts/Match/Match.cs" id="4_pbw6q"]
 [ext_resource type="Script" uid="uid://beacg11e2r4me" path="res://Scripts/SceneComplete.cs" id="4_rgh2o"]
-[ext_resource type="Script" uid="uid://to378veyn535" path="res://Scripts/Stage/Stage.cs" id="5_jw32o"]
+[ext_resource type="PackedScene" path="res://Scenes/Stage.tscn" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
 [ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="5_v1gob"]
 
@@ -21,6 +21,17 @@ script = ExtResource("4_rgh2o")
 
 [node name="TrainsSpawner" type="Node" parent="."]
 script = ExtResource("5_v1gob")
+
+[node name="StageLabel" type="Label" parent="."]
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -100.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 30.0
+text = "Stage 1"
 
 [node name="AroundBorderAnimation" type="Node" parent="." node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
 script = ExtResource("5_pbw6q")
@@ -77,14 +88,11 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Match" type="Node" parent="." node_paths=PackedStringArray("stage", "defeat")]
+[node name="Match" type="Node" parent="." node_paths=PackedStringArray("defeat", "stageLabel")]
 script = ExtResource("4_pbw6q")
-stage = NodePath("Stage")
+stageScene = ExtResource("5_jw32o")
 defeat = NodePath("DefeatVeil")
-
-[node name="Stage" type="Node" parent="Match" node_paths=PackedStringArray("trainsSpawner")]
-script = ExtResource("5_jw32o")
-trainsSpawner = NodePath("../../TrainsSpawner")
+stageLabel = NodePath("../StageLabel")
 
 [node name="DefeatVeil" type="Node" parent="Match"]
 
