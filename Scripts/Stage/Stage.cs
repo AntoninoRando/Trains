@@ -14,6 +14,7 @@ public partial class Stage : Node
     bool spawningLabel = false;
 
     public event Action<string> KeyRegistered;
+    public event Action Bump;
 
     public override void _Ready()
     {
@@ -40,6 +41,9 @@ public partial class Stage : Node
         var action_key = $"train_{n}";
         KeyRegistered?.Invoke(action_key);
         paths.Add((path, action_key));
+
+        var area = train.GetNode<TrainArea>("Area");
+        area.BumpedTrain += () => Bump?.Invoke();
 
         labelQueue.Enqueue(action_key);
         TrySpawnLabel();
