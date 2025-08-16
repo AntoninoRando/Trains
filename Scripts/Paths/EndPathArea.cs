@@ -12,6 +12,9 @@ public partial class EndPathArea : Area2D
 
     void OnTrainEnter(Area2D area)
     {
+        if (area is not TrainArea)
+            return;
+
         GD.Print("Path reached the end!");
         TrainArrived?.Invoke();
     }
