@@ -4,6 +4,10 @@ using Godot;
 
 public partial class TrainsSpawner : Node
 {
+    [Export] Node SpawnedContainer;
+
+
+
     public event Action<Train, Path> SpawnedTrain;
 
 
@@ -54,8 +58,8 @@ public partial class TrainsSpawner : Node
         var trainInstance = data.Train.Instantiate<Train>();
         var pathInstance = data.Path.Instantiate<Path>();
 
-        GetTree().Root.AddChild(trainInstance);
-        GetTree().Root.AddChild(pathInstance);
+        SpawnedContainer.AddChild(trainInstance);
+        SpawnedContainer.AddChild(pathInstance);
 
         pathInstance.AddTrain(trainInstance);
         SpawnedTrain?.Invoke(trainInstance, pathInstance);

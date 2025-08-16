@@ -7,5 +7,6 @@
 script = ExtResource("1")
 trainsSpawner = NodePath("TrainsSpawner")
 
-[node name="TrainsSpawner" type="Node" parent="."]
+[node name="TrainsSpawner" type="Node" parent="." node_paths=PackedStringArray("SpawnedContainer")]
 script = ExtResource("2_cvjmr")
+SpawnedContainer = NodePath("..")
