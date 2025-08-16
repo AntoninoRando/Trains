@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://keylabel"]
+
+[node name="KeyLabel" type="Control"]
+custom_minimum_size = Vector2(40, 40)
+
+[node name="Label" type="RichTextLabel" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+text = ""
