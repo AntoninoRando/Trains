@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://70u4whlxsppw"]
+
+[node name="SprintAction" type="Node"]
+
+[node name="Label" type="RichTextLabel" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+text = "1"
