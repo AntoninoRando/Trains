@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public partial class Stage : Node
+/*
+    The inheritance from Control is required to acquire the mouse position.
+*/
+public partial class Stage : Control
 {
     [Export] public TrainsSpawner trainsSpawner;
     private readonly List<(Path, string)> paths = [];
@@ -12,14 +15,22 @@ public partial class Stage : Node
     readonly List<Control> keyLabels = [];
     readonly Queue<string> labelQueue = new();
     bool spawningLabel = false;
+    readonly ProximityDetection proximityDetection = new();
+    readonly List<Train> trains = [];
+    Train trainOnFocus;
 
+
+
+    #region EVENTS -------------------------------------------------------------
     public event Action<string> KeyRegistered;
     public event Action Bump;
     public event Action Completed;
+    #endregion -----------------------------------------------------------------
 
     public override void _Ready()
     {
         trainsSpawner.SpawnedTrain += RegisterTrain;
+        proximityDetection.HoverLimit = 100;
     }
 
     public void Begin()
@@ -27,15 +38,45 @@ public partial class Stage : Node
         trainsSpawner.StartStage();
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _Process(double delta)
     {
+        var clickPosition = GetGlobalMousePosition();
+        proximityDetection.Update(delta, clickPosition, trains);
+
         if (paths.Count == 0) return;
 
+        /*
+            Sprint with keys.
+        */
         foreach (var item in paths)
         {
             (var path, var actionKey) = item;
             if (Input.IsActionPressed(actionKey)) path.Sprint();
-            else path.StopSprint();
+            else if (path.IsSprinting) path.StopSprint();
+        }
+
+        /*
+            Sprint with actions.
+        */
+        /// Detect when action is first pressed (clicked)
+        if (Input.IsActionJustPressed("speed_focused_train"))
+        {
+            if (proximityDetection.Hovered is Train train)
+            {
+                trainOnFocus = train;
+                trainOnFocus.Path.Sprint();
+            }
+        }
+        // If action is released, stop sprinting and clear focus
+        else if (Input.IsActionJustReleased("speed_focused_train"))
+        {
+            trainOnFocus?.Path.StopSprint();
+            trainOnFocus = null;
+        }
+        // While action is held down, keep the focused train sprinting
+        else if (Input.IsActionPressed("speed_focused_train") && trainOnFocus != null)
+        {
+            trainOnFocus.Path.Sprint();
         }
     }
 
@@ -47,6 +88,7 @@ public partial class Stage : Node
         var action_key = $"train_{n}";
         KeyRegistered?.Invoke(action_key);
         paths.Add((path, action_key));
+        trains.Add(train);
 
         var area = train.GetNode<TrainArea>("Area");
         area.BumpedTrain += () => Bump?.Invoke();

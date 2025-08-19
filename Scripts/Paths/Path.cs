@@ -17,6 +17,7 @@ public partial class Path : Node
         PathFollow.GetChildren().Where(t => t is Train).Cast<Train>();
 
     bool onSprint;
+    public bool IsSprinting => onSprint;
     string assignedAction;
 
     public void Sprint()
@@ -53,5 +54,6 @@ public partial class Path : Node
             PathFollow.AddChild(train);
         }
         train.Position *= 0;
+        train.Path = this;
     }
 }

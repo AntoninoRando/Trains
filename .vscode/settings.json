@@ -1,9 +1,9 @@
 {
-    "godotTools.editorPath.godot4": "c:\\Users\\anton\\Documents\\Godot_v4.4.1-stable_mono_win64\\Godot_v4.4.1-stable_mono_win64.exe",
     "files.exclude": {
         // Ignoring files created and maintained by godot (that should not be 
         // externally handled)
         "**/*.uid": true,
         "**/*.import": true
     },
+    "editor.rulers": [80]
 }
