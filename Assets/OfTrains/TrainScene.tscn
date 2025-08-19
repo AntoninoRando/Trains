@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://bi15syf8bq7se" path="res://Assets/OfTrains/train-whistle-306031.mp3" id="3_ebsfl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ebsfl"]
-size = Vector2(52, 46)
+size = Vector2(40, 39)
 
 [node name="Train" type="Node2D" node_paths=PackedStringArray("Model")]
 script = ExtResource("1_7umcr")
@@ -26,4 +26,5 @@ autoplay = true
 script = ExtResource("1_2zpgm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area"]
+position = Vector2(-1, -0.5)
 shape = SubResource("RectangleShape2D_ebsfl")
