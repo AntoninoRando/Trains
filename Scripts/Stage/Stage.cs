@@ -49,6 +49,18 @@ public partial class Stage : Node
         paths.Add((path, action_key));
 
         var area = train.GetNode<TrainArea>("Area");
+        area.InputPickable = true;
+        area.InputEvent += (viewport, @event, shapeIdx) =>
+        {
+            if (@event is InputEventMouseButton mouseEvent &&
+                mouseEvent.ButtonIndex == MouseButton.Left)
+            {
+                if (mouseEvent.Pressed)
+                    Input.ActionPress(action_key);
+                else
+                    Input.ActionRelease(action_key);
+            }
+        };
         area.BumpedTrain += () => Bump?.Invoke();
         path.End.TrainArrived += OnTrainArrived;
 
