@@ -5,9 +5,9 @@
 
 [sub_resource type="Curve2D" id="Curve2D_6x7a2"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 448, 704, 0, 0, 0, 0, 448, 512, 0, 0, 0, 0, 64, 512, 0, 0, 0, 0, 384, 192, 0, 0, 0, 0, 896, 64, 0, 0, 0, 0, 640, 384, 0, 0, 0, 0, 512, 384, 0, 0, 0, 0, 512, 512, 0, 0, 0, 0, 768, 576, 0, 0, 0, 0, 768, 448, 0, 0, 0, 0, 1088, 448, 0, 0, 0, 0, 1088, -64)
+"points": PackedVector2Array(0, 0, 0, 0, 448, 704, 0, 0, 0, 0, 448, 512, 0, 0, 0, 0, 64, 512, 0, 0, 0, 0, 384, 192, 0, 0, 0, 0, 896, 64, 0, 0, 0, 0, 640, 384, 0, 0, 0, 0, 568, 384, 0, 0, 0, 0, 569, -38)
 }
-point_count = 12
+point_count = 8
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6yiot"]
 
@@ -24,7 +24,7 @@ position = Vector2(448, 704)
 rotation = -1.5708
 
 [node name="End" type="Area2D" parent="."]
-position = Vector2(1088, -8)
+position = Vector2(565, 2)
 script = ExtResource("2_tns2u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="End"]

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 /*
@@ -18,14 +19,17 @@ public partial class Stage : Control
     readonly ProximityDetection proximityDetection = new();
     readonly List<Train> trains = [];
     Train trainOnFocus;
+    Train winningTrain = null;
 
 
 
     #region EVENTS -------------------------------------------------------------
     public event Action<string> KeyRegistered;
     public event Action Bump;
-    public event Action Completed;
+    public event Action<Train> Completed;
     #endregion -----------------------------------------------------------------
+
+
 
     public override void _Ready()
     {
@@ -33,9 +37,31 @@ public partial class Stage : Control
         proximityDetection.HoverLimit = 100;
     }
 
-    public void Begin()
+    public void Begin(Train carryoverTrain = null)
     {
         trainsSpawner.StartStage();
+
+        // If there's a carryover train from the previous stage, assign it to a new path
+        if (carryoverTrain != null)
+        {
+            AssignCarryoverTrain(carryoverTrain);
+        }
+    }
+
+    void AssignCarryoverTrain(Train train)
+    {
+        // Load a new path for the carryover train
+        PackedScene newPathScene = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0001.tscn");
+        Path newPath = newPathScene.Instantiate<Path>();
+
+        // Add the path to the stage
+        AddChild(newPath);
+
+        // Move the train to the new path
+        newPath.AddTrain(train);
+
+        // Register the train with the new path
+        RegisterTrain(train, newPath);
     }
 
     public override void _Process(double delta)
@@ -103,20 +129,36 @@ public partial class Stage : Control
         paths.ForEach(x => x.Item1.Speed = 0);
     }
 
-    void OnTrainArrived()
+    void OnTrainArrived(Train train)
     {
+        // Only trigger completion once for the first train
+        if (winningTrain != null) return;
+
+        winningTrain = train;
         StopTrains();
-        ClearPaths();
-        Completed?.Invoke();
+        Completed?.Invoke(train);
     }
 
-    void ClearPaths()
+    void ClearPaths(Train keepTrain = null)
     {
         foreach (var (path, _) in paths)
         {
+            // Skip the path that contains the winning train
+            if (keepTrain != null && path.Trains.Contains(keepTrain))
+            {
+                continue;
+            }
             path.QueueFree();
         }
         paths.Clear();
+        trains.Clear();
+
+        // If we're keeping a train, re-add it to the trains list
+        if (keepTrain != null)
+        {
+            trains.Add(keepTrain);
+        }
+
         foreach (var label in keyLabels)
         {
             label.QueueFree();

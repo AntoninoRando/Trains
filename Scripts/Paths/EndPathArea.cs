@@ -3,7 +3,7 @@ using Godot;
 
 public partial class EndPathArea : Area2D
 {
-    public event Action TrainArrived;
+    public event Action<Train> TrainArrived;
 
     public override void _Ready()
     {
@@ -12,10 +12,12 @@ public partial class EndPathArea : Area2D
 
     void OnTrainEnter(Area2D area)
     {
-        if (area is not TrainArea)
-            return;
+        if (area is not TrainArea trainArea) return;
 
-        GD.Print("Path reached the end!");
-        TrainArrived?.Invoke();
+        // Get the train from the TrainArea
+        var train = trainArea.GetParent<Train>();
+
+        Log.Info($"Train {train.Name} has arrived at the end path area.");
+        TrainArrived?.Invoke(train);
     }
 }
