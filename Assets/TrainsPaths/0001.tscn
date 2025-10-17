@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://pywgdv44uks1"]
+[gd_scene load_steps=6 format=3 uid="uid://pywgdv44uks1"]
 
 [ext_resource type="Script" uid="uid://5mlm1vbq58fv" path="res://Scripts/Paths/Path.cs" id="1_evev2"]
 [ext_resource type="Script" uid="uid://ctnxtb32rne3w" path="res://Scripts/Paths/EndPathArea.cs" id="1_q6yku"]
+[ext_resource type="Script" uid="uid://bf0fmuhr1unh7" path="res://Scripts/StageElements/Mine.cs" id="3_2mb47"]
 
 [sub_resource type="Curve2D" id="Curve2D_6x7a2"]
 _data = {
@@ -27,4 +28,11 @@ position = Vector2(1160, 256)
 script = ExtResource("1_q6yku")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="End"]
+shape = SubResource("RectangleShape2D_6yiot")
+
+[node name="Mine" type="Area2D" parent="."]
+position = Vector2(726, 66)
+script = ExtResource("3_2mb47")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Mine"]
 shape = SubResource("RectangleShape2D_6yiot")
