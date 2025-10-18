@@ -7,7 +7,7 @@ public partial class Match : Node
     [Export] Node defeat;
     [Export] Label stageLabel;
     [Export] CompleteAnimation completeAnimation;
-    [Export] StageCamera stageCamera;
+    [Export] StageCamera matchCamera;
     #endregion -----------------------------------------------------------------
 
 
@@ -23,7 +23,7 @@ public partial class Match : Node
     {
         defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
         defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
-        stageCamera.TransitionComplete += StartStage;
+        matchCamera.TransitionComplete += StartStage;
         StartStage();
     }
     #endregion -----------------------------------------------------------------
@@ -39,7 +39,10 @@ public partial class Match : Node
         stage.Bump += OnBump;
         stage.Completed += OnStageCompleted;
         AddChild(stage);
-        stage.GlobalPosition = stageCamera.GlobalPosition + stageCamera.Offset;
+
+        // Position the stage to align with the camera's offset
+        // This ensures new paths and trains spawn in the camera's view
+        stage.Position = matchCamera.Offset;
 
         // If there's a winning train, pass it to the new stage
         if (winningTrain != null)
@@ -58,7 +61,7 @@ public partial class Match : Node
     void OnStageCompleted(Train train)
     {
         winningTrain = train;
-        stageCamera.TrackTrain(train);
+        matchCamera.TrackTrain(train);
     }
 
     void UpdateLabel()

@@ -6,9 +6,24 @@ using Godot;
 /*
     The inheritance from Control is required to acquire the mouse position.
 */
-public partial class Stage : Control
+public partial class Stage : Node2D
 {
-    [Export] public TrainsSpawner trainsSpawner;
+    #region EXPORT FIELDS ------------------------------------------------------
+    [Export] Sprite2D background;
+    [Export] Node2D pathsContainer;
+    [Export] TrainsSpawner trainsSpawner;
+    #endregion -----------------------------------------------------------------
+
+
+
+    #region PUBLIC PROPERTIES --------------------------------------------------
+    public Sprite2D Background => background;
+    public Node2D PathsContainer => pathsContainer;
+    public TrainsSpawner TrainsSpawner => trainsSpawner;
+    #endregion -----------------------------------------------------------------
+
+
+
     private readonly List<(Path, string)> paths = [];
     const int PATHS_LIMIT = 5;
     PackedScene keyLabel = GD.Load<PackedScene>("res://Assets/KeyLabel.tscn");
@@ -55,7 +70,7 @@ public partial class Stage : Control
         Path newPath = newPathScene.Instantiate<Path>();
 
         // Add the path to the stage
-        AddChild(newPath);
+        PathsContainer.AddChild(newPath);
 
         // Move the train to the new path
         newPath.AddTrain(train);

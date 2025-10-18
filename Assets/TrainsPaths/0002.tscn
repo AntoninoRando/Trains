@@ -11,7 +11,7 @@ point_count = 8
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6yiot"]
 
-[node name="Path0002" type="Node" node_paths=PackedStringArray("PathFollow", "End")]
+[node name="Path0002" type="Node2D" node_paths=PackedStringArray("PathFollow", "End")]
 script = ExtResource("1_3s07r")
 PathFollow = NodePath("Path2D/PathFollow2D")
 End = NodePath("End")
