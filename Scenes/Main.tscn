@@ -1,31 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://4kraj3jvxem4"]
+[gd_scene load_steps=5 format=3 uid="uid://4kraj3jvxem4"]
 
+[ext_resource type="Script" uid="uid://da22b23hrdwli" path="res://Scripts/Stage/StageCamera.cs" id="1_rgh2o"]
 [ext_resource type="Script" uid="uid://m5kqj42h4s2f" path="res://Scripts/Match/Match.cs" id="4_pbw6q"]
 [ext_resource type="PackedScene" uid="uid://baqkmo3ip8xtn" path="res://Scenes/Stage.tscn" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
 
 [node name="Main" type="Node"]
 
-[node name="Background" type="ColorRect" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 1, 0.941176, 1)
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="StageLabel" type="Label" parent="."]
+[node name="StageLabel" type="Label" parent="CanvasLayer"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -100.0
 offset_top = 10.0
 offset_right = -10.0
-offset_bottom = 30.0
+offset_bottom = 33.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Stage 1"
 
-[node name="AroundBorderAnimation" type="Node" parent="." node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
+[node name="AroundBorderAnimation" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
 script = ExtResource("5_pbw6q")
 Top = NodePath("Top")
 Right = NodePath("Right")
@@ -33,7 +28,7 @@ Bottom = NodePath("Bottom")
 Left = NodePath("Left")
 Left2 = NodePath("Left2")
 
-[node name="Top" type="ColorRect" parent="AroundBorderAnimation"]
+[node name="Top" type="ColorRect" parent="CanvasLayer/AroundBorderAnimation"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 4.0
@@ -41,7 +36,7 @@ grow_horizontal = 2
 pivot_offset = Vector2(1152, 0)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Right" type="ColorRect" parent="AroundBorderAnimation"]
+[node name="Right" type="ColorRect" parent="CanvasLayer/AroundBorderAnimation"]
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
@@ -52,7 +47,7 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Bottom" type="ColorRect" parent="AroundBorderAnimation"]
+[node name="Bottom" type="ColorRect" parent="CanvasLayer/AroundBorderAnimation"]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -63,7 +58,7 @@ grow_vertical = 0
 pivot_offset = Vector2(1152, 0)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Left" type="ColorRect" parent="AroundBorderAnimation"]
+[node name="Left" type="ColorRect" parent="CanvasLayer/AroundBorderAnimation"]
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 4.0
@@ -71,7 +66,7 @@ offset_bottom = -324.0
 grow_vertical = 2
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Left2" type="ColorRect" parent="AroundBorderAnimation"]
+[node name="Left2" type="ColorRect" parent="CanvasLayer/AroundBorderAnimation"]
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_top = 324.0
@@ -80,12 +75,17 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Match" type="Node" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation")]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 342)
+script = ExtResource("1_rgh2o")
+
+[node name="Match" type="Node2D" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation", "matchCamera")]
 script = ExtResource("4_pbw6q")
 stageScene = ExtResource("5_jw32o")
 defeat = NodePath("DefeatVeil")
-stageLabel = NodePath("../StageLabel")
-completeAnimation = NodePath("../AroundBorderAnimation")
+stageLabel = NodePath("../CanvasLayer/StageLabel")
+completeAnimation = NodePath("../CanvasLayer/AroundBorderAnimation")
+matchCamera = NodePath("../Camera2D")
 
 [node name="DefeatVeil" type="Node" parent="Match"]
 

@@ -4,7 +4,7 @@ using Godot;
 
 public partial class TrainsSpawner : Node
 {
-    [Export] Control SpawnedContainer;
+    [Export] Node2D SpawnedContainer;
 
 
 
