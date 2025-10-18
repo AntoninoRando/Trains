@@ -100,7 +100,7 @@ public partial class Stage : Control
 
     public void StopTrains()
     {
-        paths.ForEach(x => x.Item1.Speed = 0);
+        paths.ForEach(x => x.Item1.SetBaseSpeed(0));
     }
 
     void OnTrainArrived()

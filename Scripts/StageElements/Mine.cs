@@ -79,7 +79,7 @@ public partial class Mine : Area2D
         originalSpeeds[train] = train.Path.Speed;
 
         // Stop the train
-        train.Path.Speed = 0;
+        train.Path.AddSpeedLayer("mine", 200, speed => 0);
 
         // Add to mining queue with full duration
         miningTrains[train] = MiningDuration;
@@ -96,7 +96,7 @@ public partial class Mine : Area2D
         }
 
         // Restore the original speed
-        train.Path.Speed = originalSpeeds[train];
+        train.Path.RemoveSpeedLayer("mine");
 
         // Clean up tracking dictionaries
         miningTrains.Remove(train);
