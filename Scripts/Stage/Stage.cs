@@ -141,7 +141,7 @@ public partial class Stage : Node2D
 
     public void StopTrains()
     {
-        paths.ForEach(x => x.Item1.Speed = 0);
+        paths.ForEach(x => x.Item1.SetBaseSpeed(0));
     }
 
     void OnTrainArrived(Train train)
