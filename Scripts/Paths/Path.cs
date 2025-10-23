@@ -48,6 +48,9 @@ public partial class Path : Node
     public bool IsSprinting => onSprint;
     string assignedAction;
 
+    public event Action SprintStarted;
+    public event Action SprintStopped;
+
     public void AddSpeedLayer(string id, int priority, Func<double, double> transform)
     {
         RemoveSpeedLayer(id); // Remove existing layer with same id if present
@@ -69,6 +72,7 @@ public partial class Path : Node
         if (onSprint) return;
         AddSpeedLayer("sprint", 100, speed => speed * SprintMultiplier);
         onSprint = true;
+        SprintStarted?.Invoke();
     }
 
     public void StopSprint()
@@ -76,6 +80,7 @@ public partial class Path : Node
         if (!onSprint) return;
         RemoveSpeedLayer("sprint");
         onSprint = false;
+        SprintStopped?.Invoke();
     }
 
 

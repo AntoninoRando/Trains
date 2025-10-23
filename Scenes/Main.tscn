@@ -75,21 +75,9 @@ grow_vertical = 2
 pivot_offset = Vector2(0, 324)
 color = Color(0.212578, 0.525317, 0.953287, 1)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(576, 342)
-script = ExtResource("1_rgh2o")
+[node name="DefeatVeil" type="Node" parent="CanvasLayer"]
 
-[node name="Match" type="Node2D" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation", "matchCamera")]
-script = ExtResource("4_pbw6q")
-stageScene = ExtResource("5_jw32o")
-defeat = NodePath("DefeatVeil")
-stageLabel = NodePath("../CanvasLayer/StageLabel")
-completeAnimation = NodePath("../CanvasLayer/AroundBorderAnimation")
-matchCamera = NodePath("../Camera2D")
-
-[node name="DefeatVeil" type="Node" parent="Match"]
-
-[node name="Container" type="Control" parent="Match/DefeatVeil"]
+[node name="Container" type="Control" parent="CanvasLayer/DefeatVeil"]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -98,7 +86,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="Match/DefeatVeil/Container"]
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/DefeatVeil/Container"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -107,7 +95,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.470588)
 
-[node name="LostText" type="RichTextLabel" parent="Match/DefeatVeil/Container"]
+[node name="LostText" type="RichTextLabel" parent="CanvasLayer/DefeatVeil/Container"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -125,7 +113,7 @@ scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Retry" type="Button" parent="Match/DefeatVeil/Container"]
+[node name="Retry" type="Button" parent="CanvasLayer/DefeatVeil/Container"]
 layout_mode = 0
 offset_left = 510.0
 offset_top = 442.0
@@ -133,10 +121,22 @@ offset_right = 560.0
 offset_bottom = 473.0
 text = "Retry"
 
-[node name="Exit" type="Button" parent="Match/DefeatVeil/Container"]
+[node name="Exit" type="Button" parent="CanvasLayer/DefeatVeil/Container"]
 layout_mode = 0
 offset_left = 583.0
 offset_top = 442.0
 offset_right = 633.0
 offset_bottom = 473.0
 text = "Exit"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 342)
+script = ExtResource("1_rgh2o")
+
+[node name="Match" type="Node2D" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation", "matchCamera")]
+script = ExtResource("4_pbw6q")
+stageScene = ExtResource("5_jw32o")
+defeat = NodePath("../CanvasLayer/DefeatVeil")
+stageLabel = NodePath("../CanvasLayer/StageLabel")
+completeAnimation = NodePath("../CanvasLayer/AroundBorderAnimation")
+matchCamera = NodePath("../Camera2D")

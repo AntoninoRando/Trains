@@ -1,0 +1,112 @@
+[gd_scene load_steps=12 format=3 uid="uid://b8kv8lqbahuxe"]
+
+[ext_resource type="Texture2D" uid="uid://cf3cspmefb1si" path="res://Assets/OfUI/PedalDownBackground/PedalDownBackground-1.png" id="1_akmfr"]
+[ext_resource type="Script" uid="uid://hy71suvi0jkv" path="res://Scripts/UI/Pedal.cs" id="1_efxfs"]
+[ext_resource type="Texture2D" uid="uid://4as6kc1lvl4h" path="res://Assets/OfUI/PedalDownBackground/PedalDownBackground-2.png" id="2_efxfs"]
+[ext_resource type="Texture2D" uid="uid://f4biqan18avt" path="res://Assets/OfUI/PedalDownBackground/PedalDownBackground-3.png" id="3_olt53"]
+[ext_resource type="Texture2D" uid="uid://6vd7b43louvw" path="res://Assets/OfUI/PedalDownFrame/PedalDownFrame-1.png" id="4_o36yq"]
+[ext_resource type="Texture2D" uid="uid://6dlqyvo6s2px" path="res://Assets/OfUI/PedalDownFrame/PedalDownFrame-2.png" id="5_8sbia"]
+[ext_resource type="Texture2D" uid="uid://tw80xbfmci5m" path="res://Assets/OfUI/PedalDownFrame/PedalDownFrame-3.png" id="6_wg8m3"]
+[ext_resource type="Texture2D" uid="uid://b8s8aaqu1dblx" path="res://Assets/OfUI/PedalDownFrame/PedalDownFrame-4.png" id="7_pdbna"]
+[ext_resource type="Texture2D" uid="uid://retr1bvik83b" path="res://Assets/OfUI/PedalDownFrame/PedalDownFrame-5.png" id="8_2l4gy"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ta5nu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_akmfr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_efxfs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_olt53")
+}],
+"loop": false,
+"name": &"Push",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_olt53")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_efxfs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_akmfr")
+}],
+"loop": false,
+"name": &"Release",
+"speed": 12.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_flf07"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_o36yq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8sbia")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_wg8m3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pdbna")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_2l4gy")
+}],
+"loop": false,
+"name": &"Push",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wg8m3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8sbia")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_o36yq")
+}],
+"loop": false,
+"name": &"Release",
+"speed": 12.0
+}]
+
+[node name="Pedal" type="Node2D" node_paths=PackedStringArray("pedalBackground", "pedalForeground", "KeyLabel")]
+script = ExtResource("1_efxfs")
+pedalBackground = NodePath("Background")
+pedalForeground = NodePath("Foreground")
+KeyLabel = NodePath("Label")
+
+[node name="Background" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0.0862745, 0.0823529, 1)
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_ta5nu")
+animation = &"Push"
+
+[node name="Foreground" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_flf07")
+animation = &"Push"
+
+[node name="Label" type="RichTextLabel" parent="."]
+offset_left = -145.0
+offset_top = -67.0
+offset_right = 13.0
+offset_bottom = 20.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/bold_italics_font_size = 30
+theme_override_font_sizes/italics_font_size = 30
+theme_override_font_sizes/mono_font_size = 30
+theme_override_font_sizes/normal_font_size = 30
+theme_override_font_sizes/bold_font_size = 30
+bbcode_enabled = true
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
