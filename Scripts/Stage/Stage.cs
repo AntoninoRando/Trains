@@ -26,9 +26,9 @@ public partial class Stage : Node2D
 
     private readonly List<(Path, string)> paths = [];
     const int PATHS_LIMIT = 5;
-    PackedScene keyLabel = GD.Load<PackedScene>("res://Assets/KeyLabel.tscn");
+    PackedScene keyLabel = GD.Load<PackedScene>("res://Scenes/OfUI/Pedal.tscn");
 
-    readonly List<Control> keyLabels = [];
+    readonly List<Pedal> keyLabels = [];
     readonly Queue<string> labelQueue = new();
     bool spawningLabel = false;
     readonly ProximityDetection proximityDetection = new();
@@ -136,7 +136,7 @@ public partial class Stage : Node2D
         path.End.TrainArrived += OnTrainArrived;
 
         labelQueue.Enqueue(action_key);
-        TrySpawnLabel();
+        TrySpawnLabel(path);
     }
 
     public void StopTrains()
@@ -182,15 +182,12 @@ public partial class Stage : Node2D
         labelQueue.Clear();
     }
 
-    async void TrySpawnLabel()
+    async void TrySpawnLabel(Path path)
     {
-        if (spawningLabel || labelQueue.Count == 0) return;
-
-        spawningLabel = true;
-
         var action = labelQueue.Dequeue();
-        var label = keyLabel.Instantiate<Control>();
-        label.GetNode<RichTextLabel>("Label").Text = action;
+        var label = keyLabel.Instantiate<Pedal>();
+        label.AssignToPath(path);
+        label.ShowKey(action);
         AddChild(label);
         keyLabels.Add(label);
 
@@ -221,8 +218,5 @@ public partial class Stage : Node2D
                 tween.TweenProperty(keyLabels[i], "position:x", targetX, 0.3);
             }
         }
-
-        spawningLabel = false;
-        TrySpawnLabel();
     }
 }

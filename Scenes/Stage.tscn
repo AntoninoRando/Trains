@@ -17,7 +17,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("2_hece6")
 
 [node name="Paths (container)" type="Node2D" parent="."]
-editor_description = "A container of the paths in the cthis stage."
+editor_description = "A container of the paths in the this stage."
 
 [node name="TrainsSpawer (logic)" type="Node" parent="." node_paths=PackedStringArray("SpawnedContainer")]
 editor_description = "This node contains the logic to spawn trains. It is not an active, interactable elment of the scene."
