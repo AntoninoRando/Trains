@@ -1,15 +1,13 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class Mine : Area2D
+/// <summary>
+/// Represents a mine area where trains stop to mine resources.
+/// </summary>
+public class Mine
 {
-    #region EXPORT FIELDS ------------------------------------------------------
-    [Export] public double MiningDuration = 3.0; // seconds
-    #endregion -----------------------------------------------------------------
-
-
-
     #region FIELDS -------------------------------------------------------------
+    public double MiningDuration = 3.0;
     // Track which trains are currently mining
     private Dictionary<Train, double> miningTrains = [];
     // Store original speeds to restore them later
@@ -18,13 +16,8 @@ public partial class Mine : Area2D
 
 
 
-    #region GODOT LIFECYCLE ----------------------------------------------------
-    public override void _Ready()
-    {
-        AreaEntered += OnAreaEntered;
-    }
-
-    public override void _Process(double delta)
+    #region PUBLIC METHODS -----------------------------------------------------
+    public void Update(double delta)
     {
         // Update mining timers for all trains currently mining
         var trainsToRelease = new List<Train>();
@@ -54,26 +47,13 @@ public partial class Mine : Area2D
     }
     #endregion -----------------------------------------------------------------
 
-    
 
-    private void OnAreaEntered(Area2D area)
+
+    #region PRIVATE METHODS ----------------------------------------------------
+    public void StartMining(Train train)
     {
-        // Check if a train entered the mine area
-        if (area is TrainArea trainArea)
-        {
-            Train train = trainArea.GetParent<Train>();
-
-            // Only start mining if this train isn't already mining
-            if (train != null && !miningTrains.ContainsKey(train))
-            {
-                StartMining(train);
-            }
-        }
-    }
-
-    private void StartMining(Train train)
-    {
-        if (train.Path == null) return;
+        if (train == null || train.Path == null) return;
+        if (miningTrains.ContainsKey(train)) return;
 
         // Store the original speed
         originalSpeeds[train] = train.Path.Speed;
@@ -87,7 +67,7 @@ public partial class Mine : Area2D
         GD.Print($"Train started mining at mine. Duration: {MiningDuration}s");
     }
 
-    private void ReleaseTrain(Train train)
+    void ReleaseTrain(Train train)
     {
         if (train.Path == null || !originalSpeeds.ContainsKey(train))
         {
@@ -104,4 +84,5 @@ public partial class Mine : Area2D
 
         GD.Print("Train finished mining and resumed movement");
     }
+    #endregion -----------------------------------------------------------------
 }

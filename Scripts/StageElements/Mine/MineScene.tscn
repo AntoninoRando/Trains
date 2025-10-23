@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://kxh0v1nwun6r"]
+
+[ext_resource type="Script" uid="uid://civkx3hb371fa" path="res://Scripts/StageElements/Mine/MineNode2D.cs" id="1_e5qos"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_liift"]
+
+[node name="Mine" type="Node2D" node_paths=PackedStringArray("MineArea")]
+script = ExtResource("1_e5qos")
+MineArea = NodePath("Area")
+
+[node name="Sprite (main)" type="Sprite2D" parent="."]
+
+[node name="Area" type="Area2D" parent="."]
+
+[node name="Collision Shape" type="CollisionShape2D" parent="Area"]
+shape = SubResource("RectangleShape2D_liift")

@@ -79,12 +79,14 @@ animations = [{
 }]
 
 [node name="Pedal" type="Node2D" node_paths=PackedStringArray("pedalBackground", "pedalForeground", "KeyLabel")]
+editor_description = "A pedela sprite with push and release animations."
 script = ExtResource("1_efxfs")
 pedalBackground = NodePath("Background")
 pedalForeground = NodePath("Foreground")
-KeyLabel = NodePath("Label")
+KeyLabel = NodePath("Push Pedal lnput-Key (label)")
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
+editor_description = "The colored part of the pedal. It is completely white so that it can be colored via the modulate property."
 modulate = Color(1, 0.0862745, 0.0823529, 1)
 scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_ta5nu")
@@ -95,7 +97,8 @@ scale = Vector2(0.2, 0.2)
 sprite_frames = SubResource("SpriteFrames_flf07")
 animation = &"Push"
 
-[node name="Label" type="RichTextLabel" parent="."]
+[node name="Push Pedal lnput-Key (label)" type="RichTextLabel" parent="."]
+editor_description = "A text label that shows which input-key should be pressed in order to push the pedal."
 offset_left = -145.0
 offset_top = -67.0
 offset_right = 13.0
