@@ -1,16 +1,15 @@
 [gd_scene load_steps=6 format=3 uid="uid://431vf1hdo80s"]
 
 [ext_resource type="Script" uid="uid://ealjwe27xn2r" path="res://Scripts/Trains/TrainArea.cs" id="1_2zpgm"]
-[ext_resource type="Script" uid="uid://nx7yv1q5aqql" path="res://Scripts/Trains/Train.cs" id="1_7umcr"]
+[ext_resource type="Script" uid="uid://c5nacamfmp32q" path="res://Scripts/Trains/TrainNode2D.cs" id="1_7umcr"]
 [ext_resource type="Texture2D" uid="uid://1k2wair1yols" path="res://Assets/OfTrains/toy-train.png" id="1_yjeji"]
 [ext_resource type="AudioStream" uid="uid://bi15syf8bq7se" path="res://Assets/OfTrains/train-whistle-306031.mp3" id="3_ebsfl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ebsfl"]
 size = Vector2(40, 39)
 
-[node name="Train" type="Node2D" node_paths=PackedStringArray("Model")]
+[node name="Train" type="Node2D"]
 script = ExtResource("1_7umcr")
-Model = NodePath("2DModel")
 
 [node name="2DModel" type="Sprite2D" parent="."]
 scale = Vector2(0.1, 0.1)

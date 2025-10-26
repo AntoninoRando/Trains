@@ -24,7 +24,7 @@ public partial class Stage : Node2D
 
 
 
-    private readonly List<(Path, string)> paths = [];
+    private readonly List<(PathNode2D, string)> paths = [];
     const int PATHS_LIMIT = 5;
     PackedScene keyLabel = GD.Load<PackedScene>("res://Scenes/OfUI/Pedal.tscn");
 
@@ -67,13 +67,13 @@ public partial class Stage : Node2D
     {
         // Load a new path for the carryover train
         PackedScene newPathScene = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0001.tscn");
-        Path newPath = newPathScene.Instantiate<Path>();
+        PathNode2D newPath = newPathScene.Instantiate<PathNode2D>();
 
         // Add the path to the stage
         PathsContainer.AddChild(newPath);
 
         // Move the train to the new path
-        newPath.AddTrain(train);
+        newPath.PathModel.AddTrain(train);
 
         // Register the train with the new path
         RegisterTrain(train, newPath);
@@ -82,7 +82,8 @@ public partial class Stage : Node2D
     public override void _Process(double delta)
     {
         var clickPosition = GetGlobalMousePosition();
-        proximityDetection.Update(delta, clickPosition, trains);
+        var trainNodes = trains.Select(t => t.GetView<TrainNode2D>()).Where(tn => tn != null);
+        proximityDetection.Update(delta, clickPosition, trainNodes);
 
         if (paths.Count == 0) return;
 
@@ -91,9 +92,9 @@ public partial class Stage : Node2D
         */
         foreach (var item in paths)
         {
-            (var path, var actionKey) = item;
-            if (Input.IsActionPressed(actionKey)) path.Sprint();
-            else if (path.IsSprinting) path.StopSprint();
+            (var pathNode, var actionKey) = item;
+            if (Input.IsActionPressed(actionKey)) pathNode.PathModel.Sprint();
+            else if (pathNode.PathModel.IsSprinting) pathNode.PathModel.StopSprint();
         }
 
         /*
@@ -102,9 +103,9 @@ public partial class Stage : Node2D
         /// Detect when action is first pressed (clicked)
         if (Input.IsActionJustPressed("speed_focused_train"))
         {
-            if (proximityDetection.Hovered is Train train)
+            if (proximityDetection.Hovered is TrainNode2D trainNode)
             {
-                trainOnFocus = train;
+                trainOnFocus = trainNode.TrainModel;
                 trainOnFocus.Path.Sprint();
             }
         }
@@ -121,27 +122,28 @@ public partial class Stage : Node2D
         }
     }
 
-    void RegisterTrain(Train train, Path path)
+    void RegisterTrain(Train train, PathNode2D pathNode)
     {
         if (paths.Count >= PATHS_LIMIT) return;
 
         var n = paths.Count + 1;
         var action_key = $"train_{n}";
         KeyRegistered?.Invoke(action_key);
-        paths.Add((path, action_key));
+        paths.Add((pathNode, action_key));
         trains.Add(train);
 
-        var area = train.GetNode<TrainArea>("Area");
+        var trainNode = train.GetView<TrainNode2D>();
+        var area = trainNode.GetNode<TrainArea>("Area");
         area.BumpedTrain += () => Bump?.Invoke();
-        path.End.TrainArrived += OnTrainArrived;
+        pathNode.End.TrainArrived += OnTrainArrived;
 
         labelQueue.Enqueue(action_key);
-        TrySpawnLabel(path);
+        TrySpawnLabel(pathNode.PathModel);
     }
 
     public void StopTrains()
     {
-        paths.ForEach(x => x.Item1.SetBaseSpeed(0));
+        paths.ForEach(x => x.Item1.PathModel.BaseSpeed = 0);
     }
 
     void OnTrainArrived(Train train)
@@ -156,14 +158,14 @@ public partial class Stage : Node2D
 
     void ClearPaths(Train keepTrain = null)
     {
-        foreach (var (path, _) in paths)
+        foreach (var (pathNode, _) in paths)
         {
             // Skip the path that contains the winning train
-            if (keepTrain != null && path.Trains.Contains(keepTrain))
+            if (keepTrain != null && pathNode.PathModel.Trains.Contains(keepTrain))
             {
                 continue;
             }
-            path.QueueFree();
+            pathNode.QueueFree();
         }
         paths.Clear();
         trains.Clear();

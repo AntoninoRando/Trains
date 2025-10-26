@@ -1,38 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
-public class SpeedLayer
-{
-    public string Id { get; }
-    public int Priority { get; }
-    public Func<double, double> Transform { get; }
-
-    public SpeedLayer(string id, int priority, Func<double, double> transform)
-    {
-        Id = id;
-        Priority = priority;
-        Transform = transform;
-    }
-}
-
-public partial class Path : Node
+public class Path
 {
     #region FIELDS -------------------------------------------------------------
-    [Export] public PathFollow2D PathFollow;
-    [Export] public EndPathArea End;
-    [Export] private double baseSpeed = 0.05;
-    [Export] public double SprintMultiplier = 2;
-
-    private List<SpeedLayer> speedLayers = [];
+    public double BaseSpeed = 0.05;
+    public double SprintMultiplier = 2;
+    readonly List<SpeedLayer> speedLayers = [];
+    bool onSprint;
+    public bool IsSprinting => onSprint;
+    string assignedAction;
+    readonly List<Train> trains = [];
+    public IReadOnlyList<Train> Trains => trains;
     #endregion -----------------------------------------------------------------
+    
 
+
+    #region PROPERTIES ---------------------------------------------------------
     public double Speed
     {
         get
         {
-            double speed = baseSpeed;
+            double speed = BaseSpeed;
             foreach (var layer in speedLayers.OrderBy(l => l.Priority))
             {
                 speed = layer.Transform(speed);
@@ -40,16 +30,18 @@ public partial class Path : Node
             return speed;
         }
     }
+    #endregion -----------------------------------------------------------------
 
-    public IEnumerable<Train> Trains =>
-        PathFollow.GetChildren().Where(t => t is Train).Cast<Train>();
 
-    bool onSprint;
-    public bool IsSprinting => onSprint;
-    string assignedAction;
 
+    #region EVENTS -------------------------------------------------------------
+    public event Action<Train> TrainAdded;
+    public event Action<Train> TrainRemoved;
     public event Action SprintStarted;
     public event Action SprintStopped;
+    #endregion -----------------------------------------------------------------
+
+
 
     public void AddSpeedLayer(string id, int priority, Func<double, double> transform)
     {
@@ -60,11 +52,6 @@ public partial class Path : Node
     public void RemoveSpeedLayer(string id)
     {
         speedLayers.RemoveAll(layer => layer.Id == id);
-    }
-
-    public void SetBaseSpeed(double speed)
-    {
-        baseSpeed = speed;
     }
 
     public void Sprint()
@@ -84,25 +71,22 @@ public partial class Path : Node
     }
 
 
-    public override void _Process(double delta)
-    {
-        PathFollow.ProgressRatio += (float)(Speed * delta);
-    }
-
     /// <summary>
     /// Adds a train to this path.
     /// </summary>
     public void AddTrain(Train train)
     {
-        if (train.GetParent() != null)
-        {
-            train.Reparent(PathFollow);
-        }
-        else
-        {
-            PathFollow.AddChild(train);
-        }
-        train.Position *= 0;
+        trains.Add(train);
         train.Path = this;
+        TrainAdded?.Invoke(train);
+    }
+
+    public void RemoveTrain(Train train)
+    {
+        if (trains.Remove(train))
+        {
+            train.Path = null;
+            TrainRemoved?.Invoke(train);
+        }
     }
 }

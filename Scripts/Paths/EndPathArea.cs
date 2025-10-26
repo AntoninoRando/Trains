@@ -14,10 +14,11 @@ public partial class EndPathArea : Area2D
     {
         if (area is not TrainArea trainArea) return;
 
-        // Get the train from the TrainArea
-        var train = trainArea.GetParent<Train>();
+        // Get the train node and then its model
+        var trainNode = trainArea.GetParent<TrainNode2D>();
+        var train = trainNode.TrainModel;
 
-        Log.Info($"Train {train.Name} has arrived at the end path area.");
+        Log.Info($"Train {trainNode.Name} has arrived at the end path area.");
         TrainArrived?.Invoke(train);
     }
 }

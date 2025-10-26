@@ -1,5 +1,4 @@
 using Godot;
-using System.Collections.Generic;
 
 /// <summary>
 /// Represents a mine area where trains stop to mine resources.
@@ -39,10 +38,10 @@ public partial class MineNode2D : Node2D
     {
         if (area is not TrainArea trainArea) return;
 
-        Train train = trainArea.GetParentOrNull<Train>();
+        var train = trainArea.GetParentOrNull<TrainNode2D>();
         if (train != null)
         {
-            mine.StartMining(train);
+            mine.StartMining(train.TrainModel);
         }
     }
     #endregion -----------------------------------------------------------------

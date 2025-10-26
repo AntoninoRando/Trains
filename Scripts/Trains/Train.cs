@@ -1,8 +1,5 @@
-using Godot;
-
-public partial class Train : Node2D
+public class Train : Model
 {
-    [Export] Sprite2D Model;
-
     public Path Path;
+    public float BaseSpeed = 0.01f;
 }

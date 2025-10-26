@@ -8,7 +8,7 @@ public partial class TrainsSpawner : Node
 
 
 
-    public event Action<Train, Path> SpawnedTrain;
+    public event Action<Train, PathNode2D> SpawnedTrain;
 
 
     private readonly List<TrainData> TrainsData = [];
@@ -55,13 +55,13 @@ public partial class TrainsSpawner : Node
 
     private void Spawn(TrainData data)
     {
-        var trainInstance = data.Train.Instantiate<Train>();
-        var pathInstance = data.Path.Instantiate<Path>();
+        var trainNode = data.Train.Instantiate<TrainNode2D>();
+        var pathNode = data.Path.Instantiate<PathNode2D>();
 
-        SpawnedContainer.AddChild(trainInstance);
-        SpawnedContainer.AddChild(pathInstance);
+        SpawnedContainer.AddChild(trainNode);
+        SpawnedContainer.AddChild(pathNode);
 
-        pathInstance.AddTrain(trainInstance);
-        SpawnedTrain?.Invoke(trainInstance, pathInstance);
+        pathNode.PathModel.AddTrain(trainNode.TrainModel);
+        SpawnedTrain?.Invoke(trainNode.TrainModel, pathNode);
     }
 }
