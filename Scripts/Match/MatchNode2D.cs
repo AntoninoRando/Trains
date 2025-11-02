@@ -33,26 +33,31 @@ public partial class MatchNode2D : Node2D
 
     void OnMatchStarted()
     {
-        if (match.Stage != null) RemoveChild(match.Stage);
+        var stageView = match.Stage != null ? ((IMouldable)match.Stage).GetView<StageNode2D>() : null;
+        if (stageView != null) RemoveChild(stageView);
+
+        // Instantiate the stage node
+        var newStageNode = stageScene.Instantiate<StageNode2D>();
+        var newStage = newStageNode.StageModel;
 
         // If there's a winning train, pass it to the new stage
         if (match.WinningTrain != null)
         {
-            Callable.From(() => match.Stage.Begin(match.WinningTrain)).CallDeferred();
+            Callable.From(() => newStageNode.Begin(match.WinningTrain)).CallDeferred();
         }
         else
         {
-            Callable.From(() => match.Stage.Begin()).CallDeferred();
+            Callable.From(() => newStageNode.Begin()).CallDeferred();
         }
 
-        match.ChangeStage(stageScene.Instantiate<Stage>());
+        match.ChangeStage(newStage);
         match.Stage.Bump += OnBump;
         match.Stage.Completed += OnStageCompleted;
-        AddChild(match.Stage);
+        AddChild(newStageNode);
 
         // Position the stage to align with the camera's offset
         // This ensures new paths and trains spawn in the camera's view
-        match.Stage.Position = matchCamera.Offset;
+        newStageNode.Position = matchCamera.Offset;
         UpdateLabel();
     }
 
