@@ -13,13 +13,14 @@ public partial class MatchNode2D : Node2D
 
 
     readonly Match match = new();
-    Stage stage; public Stage Stage => stage;
+    public Match MatchModel => match;
 
 
 
     #region GODOT LIFECYCLE ----------------------------------------------------
     public override void _Ready()
     {
+        ((IMouldable)match).SetView(this);
         defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
         defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
         matchCamera.TransitionComplete += match.Start;

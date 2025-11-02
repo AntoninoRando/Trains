@@ -36,7 +36,7 @@ public partial class StageCamera : Camera2D
     /// </summary>
     public void TrackTrain(Train train)
     {
-        var trainNode = train.GetView<TrainNode2D>();
+        var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
         var (trainX, trainY) = trainNode.GlobalPosition;
 
         if (trainX < viewportSize.X / 2 - 100)

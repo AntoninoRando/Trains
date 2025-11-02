@@ -5,11 +5,11 @@ using System;
 /// entire game session from the press of play button to the win, defeat, or
 /// interrupt.
 /// </summary>
-public class Match
+public class Match : IMouldable
 {
     Stage stage; public Stage Stage => stage;
     int stageNumber = 0; public int StageNumber => stageNumber;
-    Train winningTrain = null; public Train WinningTrain => winningTrain;
+    Train winningTrain; public Train WinningTrain { get => winningTrain; set => winningTrain = value; }
 
     public event Action Started;
     public event Action Ended;
@@ -30,7 +30,6 @@ public class Match
     public void ChangeStage(Stage newStage)
     {
         stage = newStage;
-        winningTrain = null;
     }
 }
 
