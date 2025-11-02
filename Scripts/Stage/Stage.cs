@@ -82,7 +82,7 @@ public partial class Stage : Node2D
     public override void _Process(double delta)
     {
         var clickPosition = GetGlobalMousePosition();
-        var trainNodes = trains.Select(t => t.GetView<TrainNode2D>()).Where(tn => tn != null);
+        var trainNodes = trains.Select(t => ((IMouldable)t).GetView<TrainNode2D>()).Where(tn => tn != null);
         proximityDetection.Update(delta, clickPosition, trainNodes);
 
         if (paths.Count == 0) return;
@@ -132,7 +132,7 @@ public partial class Stage : Node2D
         paths.Add((pathNode, action_key));
         trains.Add(train);
 
-        var trainNode = train.GetView<TrainNode2D>();
+        var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
         var area = trainNode.GetNode<TrainArea>("Area");
         area.BumpedTrain += () => Bump?.Invoke();
         pathNode.End.TrainArrived += OnTrainArrived;

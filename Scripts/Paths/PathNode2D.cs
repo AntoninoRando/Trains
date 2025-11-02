@@ -14,6 +14,8 @@ public partial class PathNode2D : Node2D
     public Path PathModel => path;
     #endregion -----------------------------------------------------------------
 
+
+    
     bool onSprint;
     public bool IsSprinting => onSprint;
     string assignedAction;
@@ -44,7 +46,7 @@ public partial class PathNode2D : Node2D
     /// </summary>
     public void AddTrain2D(Train train)
     {
-        var trainNode2D = train.GetView<TrainNode2D>();
+        var trainNode2D = ((IMouldable)train).GetView<TrainNode2D>();
 
         if (trainNode2D.GetParent() != null) trainNode2D.Reparent(PathFollow);
         else PathFollow.AddChild(trainNode2D);

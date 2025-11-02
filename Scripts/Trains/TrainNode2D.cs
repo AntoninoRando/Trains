@@ -9,6 +9,6 @@ public partial class TrainNode2D : Node2D
 
     public override void _Ready()
     {
-        train.SetView(this);
+        ((IMouldable)train).SetView(this);
     }
 }
