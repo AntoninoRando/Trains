@@ -22,8 +22,21 @@ public class Match : IMouldable
         Started?.Invoke();
     }
 
-    public void End()
+    public void Interrupt()
     {
+        Log.Info("Match interrupted");
+        End();
+    }
+
+    public void Lose()
+    {
+        Log.Info("Match lost");
+        End();
+    }
+
+    void End()
+    {
+        stage.StopTrains();
         Ended?.Invoke();
     }
 

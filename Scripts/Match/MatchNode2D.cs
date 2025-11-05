@@ -12,8 +12,7 @@ public partial class MatchNode2D : Node2D
 
 
 
-    readonly Match match = new();
-    public Match MatchModel => match;
+    readonly Match match = new(); public Match MatchModel => match;
 
 
 
@@ -74,20 +73,21 @@ public partial class MatchNode2D : Node2D
 
     void OnBump()
     {
-        Log.Info("Match lost");
-        match.Stage.StopTrains();
+        match.Lose();
         defeat.GetNode<Control>("Container").Visible = true;
     }
 
     void OnRetry()
     {
         Log.Info("Retrying match");
+        match.Interrupt();
         GetTree().ReloadCurrentScene();
     }
 
     void OnExit()
     {
         Log.Info("Exiting to main menu");
+        match.Interrupt();
         GetTree().ChangeSceneToFile("res://Scenes/MainMenu.tscn");
     }
 }
