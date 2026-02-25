@@ -7,15 +7,19 @@ using Godot;
 /// </summary>
 public partial class StageCamera : Camera2D
 {
+    #region LOCAL FIELDS ───────────────────────────────────────────────────────
     private Train targetTrain;
     private bool isTracking = false;
     private Vector2 viewportSize;
     private Vector2 initialPosition;
     private float trackingDuration = 1f;
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
+    #region EVENTS ─────────────────────────────────────────────────────────────
     public event Action TransitionComplete;
+    #endregion ─────────────────────────────────────────────────────────────────
 
     
 
@@ -24,13 +28,19 @@ public partial class StageCamera : Camera2D
     /// </summary>
     public bool IsTracking => isTracking;
 
+
+
+    #region GODOT LIFECYCLE ────────────────────────────────────────────────────
     public override void _Ready()
     {
         var viewport = GetViewport().GetVisibleRect();
         viewportSize = viewport.Size;
         initialPosition = Position;
     }
+    #endregion ─────────────────────────────────────────────────────────────────
 
+
+    
     /// <summary>
     /// Start tracking the winning train until it reaches the opposite edge.
     /// </summary>

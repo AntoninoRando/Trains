@@ -19,14 +19,14 @@ public class SpeedLayer
 
 public partial class Path : Node
 {
-    #region FIELDS -------------------------------------------------------------
+    #region FIELDS ────────────────────────────────────────────────────────────-
     [Export] public PathFollow2D PathFollow;
     [Export] public EndPathArea End;
     [Export] private double baseSpeed = 0.05;
     [Export] public double SprintMultiplier = 2;
 
     private List<SpeedLayer> speedLayers = [];
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
     public double Speed
     {

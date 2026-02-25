@@ -4,16 +4,16 @@ using Godot;
 
 public class ProximityDetection
 {
-    #region FIELDS -------------------------------------------------------------
+    #region FIELDS ─────────────────────────────────────────────────────────────
     protected Node2D? hovered = null;
     protected double secondsInHover;
     protected double timeSinceLastHoverChange = 0;
     protected bool hasTriggeredHoverStart = false;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
-    #region PUBLIC FIELDS ------------------------------------------------------
+    #region PUBLIC FIELDS ──────────────────────────────────────────────────────
     [Export] public float HoverLimit = 50.0f;
     [Export] public float HoverSwitchThreshold = 15.0f;
     [Export] public double HoverChangeDelay = 0.1;
@@ -23,13 +23,13 @@ public class ProximityDetection
     public Action<Node2D> HoverStartAction;
     public Action<Node2D> HoverStillAction;
     public Action<Node2D> HoverEndAction;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
-    #region PROPERTIES ---------------------------------------------------------
+    #region PROPERTIES ─────────────────────────────────────────────────────────
     public Node2D? Hovered => hovered;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 

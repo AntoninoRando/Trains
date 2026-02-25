@@ -8,19 +8,17 @@ using Godot;
 */
 public partial class Stage : Node2D
 {
-    #region EXPORT FIELDS ------------------------------------------------------
-    [Export] Sprite2D background;
+    #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] Node2D pathsContainer;
     [Export] TrainsSpawner trainsSpawner;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
-    #region PUBLIC PROPERTIES --------------------------------------------------
-    public Sprite2D Background => background;
+    #region PUBLIC PROPERTIES ──────────────────────────────────────────────────
     public Node2D PathsContainer => pathsContainer;
     public TrainsSpawner TrainsSpawner => trainsSpawner;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
@@ -38,11 +36,11 @@ public partial class Stage : Node2D
 
 
 
-    #region EVENTS -------------------------------------------------------------
+    #region EVENTS ────────────────────────────────────────────────────────────-
     public event Action<string> KeyRegistered;
     public event Action Bump;
     public event Action<Train> Completed;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 

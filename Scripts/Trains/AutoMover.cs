@@ -2,9 +2,9 @@ using Godot;
 
 public partial class AutoMover : Node
 {
-    #region EXPORT FIELDS ------------------------------------------------------
+    #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] public double Speed = 0.05;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 

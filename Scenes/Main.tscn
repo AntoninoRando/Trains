@@ -1,11 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://4kraj3jvxem4"]
+[gd_scene load_steps=6 format=3 uid="uid://4kraj3jvxem4"]
 
+[ext_resource type="Texture2D" uid="uid://bk6u2k34aalh0" path="res://Assets/OfStages/Caves/Backgrounds/Example.png" id="1_pbw6q"]
 [ext_resource type="Script" uid="uid://da22b23hrdwli" path="res://Scripts/Stage/StageCamera.cs" id="1_rgh2o"]
 [ext_resource type="Script" uid="uid://m5kqj42h4s2f" path="res://Scripts/Match/Match.cs" id="4_pbw6q"]
 [ext_resource type="PackedScene" uid="uid://baqkmo3ip8xtn" path="res://Scenes/Stage.tscn" id="5_jw32o"]
 [ext_resource type="Script" uid="uid://cu68pcw15cpt6" path="res://Scripts/Stage/CompleteAnimation.cs" id="5_pbw6q"]
 
 [node name="Main" type="Node"]
+
+[node name="Terrain Layer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Terrain" type="TextureRect" parent="Terrain Layer"]
+z_index = -1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_pbw6q")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -129,7 +142,7 @@ offset_right = 633.0
 offset_bottom = 473.0
 text = "Exit"
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera" type="Camera2D" parent="."]
 position = Vector2(576, 342)
 script = ExtResource("1_rgh2o")
 
@@ -139,4 +152,4 @@ stageScene = ExtResource("5_jw32o")
 defeat = NodePath("../CanvasLayer/DefeatVeil")
 stageLabel = NodePath("../CanvasLayer/StageLabel")
 completeAnimation = NodePath("../CanvasLayer/AroundBorderAnimation")
-matchCamera = NodePath("../Camera2D")
+matchCamera = NodePath("../Camera")

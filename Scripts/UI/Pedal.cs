@@ -2,11 +2,11 @@ using Godot;
 
 public partial class Pedal : Node2D
 {
-    #region EXPORT FIELDS ------------------------------------------------------
+    #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] private AnimatedSprite2D pedalBackground;
     [Export] private AnimatedSprite2D pedalForeground;
     [Export] private RichTextLabel KeyLabel;
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
     public void AssignToPath(Path path)

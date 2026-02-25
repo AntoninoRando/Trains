@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 public partial class Mine : Area2D
 {
-    #region EXPORT FIELDS ------------------------------------------------------
+    #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] public double MiningDuration = 3.0; // seconds
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
-    #region FIELDS -------------------------------------------------------------
+    #region FIELDS ────────────────────────────────────────────────────────────-
     // Track which trains are currently mining
     private Dictionary<Train, double> miningTrains = [];
     // Store original speeds to restore them later
     private Dictionary<Train, double> originalSpeeds = [];
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
 
 
-    #region GODOT LIFECYCLE ----------------------------------------------------
+    #region GODOT LIFECYCLE ───────────────────────────────────────────────────-
     public override void _Ready()
     {
         AreaEntered += OnAreaEntered;
@@ -52,7 +52,7 @@ public partial class Mine : Area2D
             ReleaseTrain(train);
         }
     }
-    #endregion -----------------------------------------------------------------
+    #endregion ─────────────────────────────────────────────────────────────────
 
     
 
