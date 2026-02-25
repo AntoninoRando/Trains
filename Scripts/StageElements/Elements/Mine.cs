@@ -1,10 +1,14 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class Mine : Area2D
+public partial class Mine : StageElement
 {
     #region EXPORT FIELDS ──────────────────────────────────────────────────────
+    [ExportGroup("Mine Settings")]
     [Export] public double MiningDuration = 3.0; // seconds
+
+    [ExportGroup("Node References")]
+    [Export] Area2D detectionArea;
     #endregion ─────────────────────────────────────────────────────────────────
 
 
@@ -21,7 +25,7 @@ public partial class Mine : Area2D
     #region GODOT LIFECYCLE ───────────────────────────────────────────────────-
     public override void _Ready()
     {
-        AreaEntered += OnAreaEntered;
+        detectionArea.AreaEntered += OnAreaEntered;
     }
 
     public override void _Process(double delta)

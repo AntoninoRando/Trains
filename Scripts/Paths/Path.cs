@@ -19,14 +19,17 @@ public class SpeedLayer
 
 public partial class Path : Node
 {
-    #region FIELDS ────────────────────────────────────────────────────────────-
+    #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] public PathFollow2D PathFollow;
     [Export] public EndPathArea End;
     [Export] private double baseSpeed = 0.05;
     [Export] public double SprintMultiplier = 2;
-
-    private List<SpeedLayer> speedLayers = [];
     #endregion ─────────────────────────────────────────────────────────────────
+
+
+    #region LOCAL FIELDS ───────────────────────────────────────────────────────
+    private Vector2[] points;
+    private List<SpeedLayer> speedLayers = [];
 
     public double Speed
     {
@@ -41,15 +44,56 @@ public partial class Path : Node
         }
     }
 
-    public IEnumerable<Train> Trains =>
-        PathFollow.GetChildren().Where(t => t is Train).Cast<Train>();
+    public IEnumerable<Train> Trains => PathFollow.GetChildren().Where(t => t is Train).Cast<Train>();
+    public Vector2[] Points => points;
 
     bool onSprint;
     public bool IsSprinting => onSprint;
     string assignedAction;
+    #endregion ─────────────────────────────────────────────────────────────────
 
+
+
+    #region EVENTS ─────────────────────────────────────────────────────────────
     public event Action SprintStarted;
     public event Action SprintStopped;
+    #endregion ─────────────────────────────────────────────────────────────────
+
+
+
+    #region GODOT LIFECYCLE ────────────────────────────────────────────────────
+    override public void _Ready()
+    {
+        if (points == null)
+        {
+            LoadPoints();
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        PathFollow.ProgressRatio += (float)(Speed * delta);
+    }
+    #endregion ─────────────────────────────────────────────────────────────────
+
+
+
+    private void LoadPoints()
+    {
+        var gridSize = 64;
+        var path2d = GetNode<Path2D>("Path2D");
+        var curve = path2d.Curve;
+        var totalLength = curve.GetBakedLength();
+
+        var result = new List<Vector2>();
+        for (float t = 0; t < totalLength; t += gridSize)
+        {
+            result.Add(curve.SampleBaked(t));
+        }
+        result.Add(curve.SampleBaked(totalLength)); // always include the end point
+
+        points = result.ToArray();
+    }
 
     public void AddSpeedLayer(string id, int priority, Func<double, double> transform)
     {
@@ -81,12 +125,6 @@ public partial class Path : Node
         RemoveSpeedLayer("sprint");
         onSprint = false;
         SprintStopped?.Invoke();
-    }
-
-
-    public override void _Process(double delta)
-    {
-        PathFollow.ProgressRatio += (float)(Speed * delta);
     }
 
     /// <summary>

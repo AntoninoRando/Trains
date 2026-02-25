@@ -8,7 +8,6 @@ public partial class Match : Node
     [Export] Label stageLabel;
     [Export] CompleteAnimation completeAnimation;
     [Export] StageCamera matchCamera;
-    [Export] bool IsNextStage = false;
     #endregion ─────────────────────────────────────────────────────────────────
 
 
@@ -22,11 +21,6 @@ public partial class Match : Node
     #region GODOT LIFECYCLE ────────────────────────────────────────────────────
     public override void _Ready()
     {
-        if (IsNextStage)
-        {
-            return;
-        }
-
         defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
         defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
         matchCamera.TransitionComplete += StartStage;

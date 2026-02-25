@@ -10,14 +10,13 @@ public partial class Stage : Node2D
 {
     #region EXPORT FIELDS ──────────────────────────────────────────────────────
     [Export] Node2D pathsContainer;
-    [Export] TrainsSpawner trainsSpawner;
     #endregion ─────────────────────────────────────────────────────────────────
 
 
 
     #region PUBLIC PROPERTIES ──────────────────────────────────────────────────
     public Node2D PathsContainer => pathsContainer;
-    public TrainsSpawner TrainsSpawner => trainsSpawner;
+    public Path[] Paths => [.. pathsContainer.GetChildren().OfType<Path>()];
     #endregion ─────────────────────────────────────────────────────────────────
 
 
@@ -36,7 +35,8 @@ public partial class Stage : Node2D
 
 
 
-    #region EVENTS ────────────────────────────────────────────────────────────-
+    #region EVENTS ─────────────────────────────────────────────────────────────
+    public event Action Starting;
     public event Action<string> KeyRegistered;
     public event Action Bump;
     public event Action<Train> Completed;
@@ -46,19 +46,19 @@ public partial class Stage : Node2D
 
     public override void _Ready()
     {
-        trainsSpawner.SpawnedTrain += RegisterTrain;
+        Game.ChangeContext(this);
         proximityDetection.HoverLimit = 100;
     }
 
     public void Begin(Train carryoverTrain = null)
     {
-        trainsSpawner.StartStage();
-
         // If there's a carryover train from the previous stage, assign it to a new path
         if (carryoverTrain != null)
         {
             AssignCarryoverTrain(carryoverTrain);
         }
+
+        Starting?.Invoke();
     }
 
     void AssignCarryoverTrain(Train train)
@@ -119,7 +119,7 @@ public partial class Stage : Node2D
         }
     }
 
-    void RegisterTrain(Train train, Path path)
+    public void RegisterTrain(Train train, Path path)
     {
         if (paths.Count >= PATHS_LIMIT) return;
 

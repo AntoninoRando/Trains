@@ -1,17 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://baqkmo3ip8xtn"]
+[gd_scene load_steps=2 format=3 uid="uid://baqkmo3ip8xtn"]
 
 [ext_resource type="Script" uid="uid://to378veyn535" path="res://Scripts/Stage/Stage.cs" id="1"]
-[ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="2_cvjmr"]
 
-[node name="Stage" type="Node2D" node_paths=PackedStringArray("pathsContainer", "trainsSpawner")]
+[node name="Stage" type="Node2D" node_paths=PackedStringArray("pathsContainer")]
 script = ExtResource("1")
 pathsContainer = NodePath("Paths (container)")
-trainsSpawner = NodePath("TrainsSpawer (logic)")
 
 [node name="Paths (container)" type="Node2D" parent="."]
 editor_description = "A container of the paths in the this stage."
-
-[node name="TrainsSpawer (logic)" type="Node" parent="." node_paths=PackedStringArray("SpawnedContainer")]
-editor_description = "This node contains the logic to spawn trains. It is not an active, interactable elment of the scene."
-script = ExtResource("2_cvjmr")
-SpawnedContainer = NodePath("../Paths (container)")
