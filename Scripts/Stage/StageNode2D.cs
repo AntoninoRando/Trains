@@ -136,6 +136,11 @@ public partial class StageNode2D : Node2D
         var n = stage.Paths.Count + 1;
         var action_key = $"train_{n}";
 
+        // Give this path and its train a shared identity colour (1-based slot),
+        // so the track and the train that runs on it are easy to tell apart.
+        var color = TrackPalette.For(n - 1);
+        pathNode.TrackColor = color;
+
         // Register in logic layer
         stage.RegisterTrain(train, pathNode.PathModel, action_key);
 
@@ -143,6 +148,7 @@ public partial class StageNode2D : Node2D
         pathNodes.Add((pathNode, action_key));
 
         var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
+        if (trainNode != null) trainNode.Modulate = color;
         var area = trainNode.GetNode<TrainArea>("Area");
         area.BumpedTrain += () => stage.TriggerBump();
         pathNode.End.TrainArrived += stage.OnTrainArrived;

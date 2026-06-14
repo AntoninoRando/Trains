@@ -15,8 +15,14 @@ using Godot;
 ///   * three connections                       -> a T-junction
 ///   * four connections                        -> a crossing (an intersection)
 ///
-/// The network is rebuilt automatically whenever the set of paths (or their
-/// geometry) changes, so it works with runtime-spawned and carryover paths.
+/// Each tile is tinted by the colour of the path that owns it, so paths (and
+/// their trains) are easy to tell apart. Cells used by more than one path
+/// (overlaps and crossings) are tinted with the average of those paths' colours,
+/// which reads as "shared track".
+///
+/// The network is rebuilt automatically whenever the set of paths, their
+/// geometry, or their colours change, so it works with runtime-spawned and
+/// carryover paths.
 ///
 /// Placed as the first child of the paths container, its tiles draw beneath the
 /// trains while sitting above the stage background.
@@ -71,6 +77,10 @@ public partial class TrackTiler : Node2D
                 Mix(Mathf.RoundToInt(pt.X));
                 Mix(Mathf.RoundToInt(pt.Y));
             }
+            // colour, so re-tinting a path also triggers a rebuild
+            Color c = p.TrackColor;
+            Mix(Mathf.RoundToInt(c.R * 255) | (Mathf.RoundToInt(c.G * 255) << 8)
+                | (Mathf.RoundToInt(c.B * 255) << 16) | (Mathf.RoundToInt(c.A * 255) << 24));
         }
         return h;
     }
@@ -80,23 +90,35 @@ public partial class TrackTiler : Node2D
     {
         foreach (Node child in GetChildren()) child.QueueFree();
 
-        // 1) Accumulate connection masks per grid cell across every path.
-        var masks = new Dictionary<Vector2I, int>();
+        // Gather the paths and the identity colour each one paints with.
+        var pathNodes = new List<PathNode2D>();
+        var pathColors = new List<Color>();
         foreach (var p in Paths())
         {
-            var curve = p.Curve;
-            var path2d = p.Path2DNode;
+            pathColors.Add(ResolveColor(p, pathNodes.Count));
+            pathNodes.Add(p);
+        }
+
+        // 1) Accumulate, per grid cell, the connection mask and the set of paths
+        //    that pass through it.
+        var masks = new Dictionary<Vector2I, int>();
+        var cellPaths = new Dictionary<Vector2I, HashSet<int>>();
+
+        for (int pi = 0; pi < pathNodes.Count; pi++)
+        {
+            var curve = pathNodes[pi].Curve;
+            var path2d = pathNodes[pi].Path2DNode;
             if (curve == null || path2d == null || curve.PointCount < 2) continue;
 
             for (int i = 0; i < curve.PointCount - 1; i++)
             {
                 Vector2 a = ToLocal(path2d.ToGlobal(curve.GetPointPosition(i)));
                 Vector2 b = ToLocal(path2d.ToGlobal(curve.GetPointPosition(i + 1)));
-                Stamp(masks, ToCell(a), ToCell(b));
+                Stamp(masks, cellPaths, pi, ToCell(a), ToCell(b));
             }
         }
 
-        // 2) Instantiate one tile sprite per cell.
+        // 2) Instantiate one tinted tile sprite per cell.
         int placed = 0;
         foreach (var kv in masks)
         {
@@ -107,19 +129,29 @@ public partial class TrackTiler : Node2D
                 TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
                 Position = new Vector2(kv.Key.X * Cell, kv.Key.Y * Cell),
                 Rotation = rot,
+                Modulate = BlendColor(cellPaths.GetValueOrDefault(kv.Key), pathColors),
             });
             placed++;
         }
 
         Log.Info($"[TrackTiler] rebuilt track: {placed} tiles over {masks.Count} cells "
-               + $"({CountPaths()} paths).");
+               + $"({pathNodes.Count} paths).");
     }
 
-    int CountPaths()
+    static Color ResolveColor(PathNode2D p, int index)
+        => p.TrackColor.A > 0f ? p.TrackColor : TrackPalette.For(index);
+
+    // Average the colours of every path that uses a cell (white if somehow none).
+    static Color BlendColor(HashSet<int> set, List<Color> colors)
     {
-        int n = 0;
-        foreach (var _ in Paths()) n++;
-        return n;
+        if (set == null || set.Count == 0) return new Color(1, 1, 1);
+        float r = 0, g = 0, b = 0;
+        foreach (int i in set)
+        {
+            Color c = colors[i];
+            r += c.R; g += c.G; b += c.B;
+        }
+        return new Color(r / set.Count, g / set.Count, b / set.Count);
     }
 
     // ----------------------------------------------------------- grid helpers
@@ -128,15 +160,18 @@ public partial class TrackTiler : Node2D
 
     /// Connect two cells. We move along X then along Y, so a straight segment is
     /// rasterised exactly and an unexpected diagonal degrades to a clean L.
-    static void Stamp(Dictionary<Vector2I, int> masks, Vector2I a, Vector2I b)
+    static void Stamp(Dictionary<Vector2I, int> masks, Dictionary<Vector2I, HashSet<int>> cellPaths,
+                      int pi, Vector2I a, Vector2I b)
     {
         Vector2I cur = a;
-        cur = Walk(masks, cur, new Vector2I(b.X, cur.Y));
-        Walk(masks, cur, new Vector2I(cur.X, b.Y));
+        cur = Walk(masks, cellPaths, pi, cur, new Vector2I(b.X, cur.Y));
+        Walk(masks, cellPaths, pi, cur, new Vector2I(cur.X, b.Y));
     }
 
-    static Vector2I Walk(Dictionary<Vector2I, int> masks, Vector2I cur, Vector2I target)
+    static Vector2I Walk(Dictionary<Vector2I, int> masks, Dictionary<Vector2I, HashSet<int>> cellPaths,
+                         int pi, Vector2I cur, Vector2I target)
     {
+        Mark(cellPaths, cur, pi);
         while (cur != target)
         {
             var step = new Vector2I(
@@ -146,9 +181,20 @@ public partial class TrackTiler : Node2D
             int d = DirBit(step);
             masks[cur] = masks.GetValueOrDefault(cur) | d;
             masks[next] = masks.GetValueOrDefault(next) | Opposite(d);
+            Mark(cellPaths, next, pi);
             cur = next;
         }
         return cur;
+    }
+
+    static void Mark(Dictionary<Vector2I, HashSet<int>> cellPaths, Vector2I cell, int pi)
+    {
+        if (!cellPaths.TryGetValue(cell, out var set))
+        {
+            set = new HashSet<int>();
+            cellPaths[cell] = set;
+        }
+        set.Add(pi);
     }
 
     static int DirBit(Vector2I step)

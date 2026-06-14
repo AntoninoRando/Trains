@@ -18,6 +18,11 @@ public partial class PathNode2D : Node2D
 
     /// <summary>The geometry of this path, used by the track renderer.</summary>
     public Curve2D Curve => Path2DNode?.Curve;
+
+    /// <summary>Identity colour for this path's track and train.
+    /// Alpha 0 means "unassigned" (the renderer then falls back to a palette
+    /// colour picked by path order).</summary>
+    public Color TrackColor { get; set; } = new Color(0, 0, 0, 0);
     #endregion -----------------------------------------------------------------
 
 
