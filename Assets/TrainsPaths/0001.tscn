@@ -6,7 +6,7 @@
 
 [sub_resource type="Curve2D" id="Curve2D_6x7a2"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -56, 192, 0, 0, 0, 0, 448, 192, 0, 0, 0, 0, 448, 64, 0, 0, 0, 0, 896, 64, 0, 0, 0, 0, 896, 384, 0, 0, 0, 0, 448, 384, 0, 0, 0, 0, 448, 512, 0, 0, 0, 0, 1024, 512, 0, 0, 0, 0, 1152, 256, 0, 0, 0, 0, 1264, 256)
+"points": PackedVector2Array(0, 0, 0, 0, -64, 192, 0, 0, 0, 0, 448, 192, 0, 0, 0, 0, 448, 64, 0, 0, 0, 0, 896, 64, 0, 0, 0, 0, 896, 384, 0, 0, 0, 0, 448, 384, 0, 0, 0, 0, 448, 512, 0, 0, 0, 0, 1024, 512, 0, 0, 0, 0, 1024, 256, 0, 0, 0, 0, 1280, 256)
 }
 point_count = 10
 
@@ -21,7 +21,7 @@ End = NodePath("End")
 curve = SubResource("Curve2D_6x7a2")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2(-56, 192)
+position = Vector2(-64, 192)
 
 [node name="End" type="Area2D" parent="."]
 position = Vector2(1160, 256)

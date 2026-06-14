@@ -12,6 +12,12 @@ public partial class PathNode2D : Node2D
 
     readonly Path path = new();
     public Path PathModel => path;
+
+    /// <summary>The Path2D that owns this path's curve (parent of PathFollow).</summary>
+    public Path2D Path2DNode => PathFollow?.GetParent() as Path2D;
+
+    /// <summary>The geometry of this path, used by the track renderer.</summary>
+    public Curve2D Curve => Path2DNode?.Curve;
     #endregion -----------------------------------------------------------------
 
 

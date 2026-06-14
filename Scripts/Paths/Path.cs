@@ -10,7 +10,6 @@ public class Path
     readonly List<SpeedLayer> speedLayers = [];
     bool onSprint;
     public bool IsSprinting => onSprint;
-    string assignedAction;
     readonly List<Train> trains = [];
     public IReadOnlyList<Train> Trains => trains;
     #endregion -----------------------------------------------------------------

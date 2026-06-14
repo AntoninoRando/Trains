@@ -23,10 +23,10 @@ public partial class TrainsSpawner : Node
         base._Ready();
     }
 
-    public void StartStage()
+    public void StartStage(bool spawnFirstPath = true)
     {
         TrainsData.Clear();
-        Enqueue(train, path0001, 0);
+        if (spawnFirstPath) Enqueue(train, path0001, 0);
         Enqueue(train, path0002, 0);
     }
 

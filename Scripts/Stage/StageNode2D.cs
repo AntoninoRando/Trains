@@ -40,6 +40,14 @@ public partial class StageNode2D : Node2D
     public override void _Ready()
     {
         ((IMouldable)stage).SetView(this);
+
+        // Render the paths as a tiled railroad track. Added as the first child of
+        // the paths container so its tiles draw beneath the trains (which live in
+        // the path nodes added afterwards) yet above the stage background.
+        var trackTiler = new TrackTiler { Name = "TrackTiler" };
+        pathsContainer.AddChild(trackTiler);
+        pathsContainer.MoveChild(trackTiler, 0);
+
         trainsSpawner.SpawnedTrain += RegisterTrain;
         proximityDetection.HoverLimit = 100;
         stage.KeyRegistered += OnKeyRegistered;
@@ -94,7 +102,9 @@ public partial class StageNode2D : Node2D
 
     public void Begin(Train carryoverTrain = null)
     {
-        trainsSpawner.StartStage();
+        // The carryover train re-uses path 0001: don't spawn a new train on it,
+        // otherwise the two trains would overlap and bump immediately.
+        trainsSpawner.StartStage(spawnFirstPath: carryoverTrain == null);
 
         // If there's a carryover train from the previous stage, assign it to a new path
         if (carryoverTrain != null)
