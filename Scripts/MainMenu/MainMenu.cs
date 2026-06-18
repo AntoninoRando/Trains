@@ -4,6 +4,10 @@ public partial class MainMenu : Control
 {
     public override void _Ready()
     {
+        // Apply the saved display settings (resolution / mode / VSync) at launch.
+        // The main menu is the first scene loaded, so this runs once on boot.
+        GameSettings.Apply();
+
         // Show the player's persistent gold so the shop's prices make sense.
         var goldLabel = GetNodeOrNull<Label>("GoldLabel");
         if (goldLabel != null) goldLabel.Text = $"Gold: {PlayerProfile.Gold}";
@@ -21,7 +25,7 @@ public partial class MainMenu : Control
 
     public void OnSettingsPressed()
     {
-        GD.Print("Settings pressed");
+        GetTree().ChangeSceneToFile("res://Scenes/Settings.tscn");
     }
 
     public void OnQuitPressed()

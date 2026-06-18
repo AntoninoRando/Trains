@@ -12,27 +12,33 @@ public partial class TrainsSpawner : Node
 
 
     private readonly List<TrainData> TrainsData = [];
-    private record TrainData(PackedScene Train, PackedScene Path, double Delay);
+    private record TrainData(PackedScene Train, Curve2D Curve, double Delay);
 
     PackedScene train = GD.Load<PackedScene>("res:///Assets/OfTrains/TrainScene.tscn");
-    PackedScene path0001 = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0001.tscn");
-    PackedScene path0002 = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0002.tscn");
 
     public override void _Ready()
     {
         base._Ready();
     }
 
-    public void StartStage(bool spawnFirstPath = true)
+    /// <summary>
+    /// Queues a fresh train for every generated path. When a train is carried
+    /// over from the previous stage it owns the first path (index 0), so that
+    /// slot is skipped here to avoid spawning a second train on it.
+    /// </summary>
+    public void StartStage(IReadOnlyList<Curve2D> curves, bool spawnFirstPath = true)
     {
         TrainsData.Clear();
-        if (spawnFirstPath) Enqueue(train, path0001, 0);
-        Enqueue(train, path0002, 0);
+        for (int i = 0; i < curves.Count; i++)
+        {
+            if (i == 0 && !spawnFirstPath) continue;
+            Enqueue(train, curves[i], 0);
+        }
     }
 
-    public void Enqueue(PackedScene train, PackedScene path, double delay)
+    public void Enqueue(PackedScene train, Curve2D curve, double delay)
     {
-        TrainsData.Add(new TrainData(train, path, delay));
+        TrainsData.Add(new TrainData(train, curve, delay));
     }
 
     public override void _Process(double delta)
@@ -56,7 +62,7 @@ public partial class TrainsSpawner : Node
     private void Spawn(TrainData data)
     {
         var trainNode = data.Train.Instantiate<TrainNode2D>();
-        var pathNode = data.Path.Instantiate<PathNode2D>();
+        var pathNode = PathFactory.Build(data.Curve);
 
         SpawnedContainer.AddChild(trainNode);
         SpawnedContainer.AddChild(pathNode);

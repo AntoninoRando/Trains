@@ -1,25 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://baqkmo3ip8xtn"]
+[gd_scene format=3 uid="uid://baqkmo3ip8xtn"]
 
 [ext_resource type="Script" uid="uid://d30r787foc811" path="res://Scripts/Stage/StageNode2D.cs" id="1_hece6"]
 [ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="2_cvjmr"]
 [ext_resource type="Texture2D" uid="uid://dld5sv3oklg78" path="res://Assets/OfStages/Caves/Backgrounds/Pixel-Art-Cave-Cover.png" id="2_hece6"]
 
-[node name="Stage" type="Node2D" node_paths=PackedStringArray("background", "pathsContainer", "trainsSpawner")]
+[node name="Stage" type="Node2D" unique_id=1216399516 node_paths=PackedStringArray("background", "pathsContainer", "trainsSpawner")]
 script = ExtResource("1_hece6")
 background = NodePath("Background")
 pathsContainer = NodePath("Paths (container)")
 trainsSpawner = NodePath("TrainsSpawer (logic)")
+pathCount = 1
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1059875448]
 editor_description = "The background of this stage."
 position = Vector2(543, 357)
 scale = Vector2(2, 2)
 texture = ExtResource("2_hece6")
 
-[node name="Paths (container)" type="Node2D" parent="."]
+[node name="Paths (container)" type="Node2D" parent="." unique_id=1899283833]
 editor_description = "A container of the paths in the this stage."
 
-[node name="TrainsSpawer (logic)" type="Node" parent="." node_paths=PackedStringArray("SpawnedContainer")]
+[node name="TrainsSpawer (logic)" type="Node" parent="." unique_id=1309990105 node_paths=PackedStringArray("SpawnedContainer")]
 editor_description = "This node contains the logic to spawn trains. It is not an active, interactable elment of the scene."
 script = ExtResource("2_cvjmr")
 SpawnedContainer = NodePath("../Paths (container)")

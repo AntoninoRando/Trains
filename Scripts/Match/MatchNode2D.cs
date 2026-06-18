@@ -58,6 +58,11 @@ public partial class MatchNode2D : Node2D
         matchCamera.TransitionComplete += match.Start;
         match.Started += OnMatchStarted;
 
+        // "Main Menu" from the pause overlay reuses the same interrupt + bank +
+        // scene-change path as the defeat screen's Exit button.
+        var pauseMenu = GetNodeOrNull<PauseMenu>("../CanvasLayer/PauseMenu");
+        if (pauseMenu != null) pauseMenu.ExitRequested += OnExit;
+
         // Keep the gold HUD in sync with the wallet.
         if (goldLabel != null)
         {

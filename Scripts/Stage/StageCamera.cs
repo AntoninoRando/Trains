@@ -11,6 +11,7 @@ public partial class StageCamera : Camera2D
     private bool isTracking = false;
     private Vector2 viewportSize;
     private float trackingDuration = 1f;
+    private Viewport boundViewport;
 
 
 
@@ -39,7 +40,26 @@ public partial class StageCamera : Camera2D
 
     public override void _Ready()
     {
-        viewportSize = GetViewport().GetVisibleRect().Size;
+        boundViewport = GetViewport();
+        // Centre the camera on the viewport so each stage's local (0,0)..(size)
+        // region maps 1:1 to the screen at any resolution. The scene's design-time
+        // position was hard-coded for the old 1152x648 build, which shifted the
+        // whole stage (paths, background, bottom labels) off-centre on other sizes.
+        RecenterToViewport();
+        boundViewport.SizeChanged += RecenterToViewport;
+    }
+
+    /// <summary>Keeps the camera centred on the viewport, updating on resize.</summary>
+    void RecenterToViewport()
+    {
+        viewportSize = boundViewport.GetVisibleRect().Size;
+        Position = viewportSize / 2f;
+    }
+
+    public override void _ExitTree()
+    {
+        if (boundViewport != null && GodotObject.IsInstanceValid(boundViewport))
+            boundViewport.SizeChanged -= RecenterToViewport;
     }
 
     /// <summary>

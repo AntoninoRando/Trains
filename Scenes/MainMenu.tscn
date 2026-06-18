@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctm1pvtmwc7es"]
+[gd_scene format=3 uid="uid://ctm1pvtmwc7es"]
 
 [ext_resource type="Script" uid="uid://bbcgdqonsfuaw" path="res://Scripts/MainMenu/MainMenu.cs" id="1_q7e13"]
+[ext_resource type="Theme" uid="uid://cuolkh267bhyp" path="res://Assets/Themes/UI Buttons.tres" id="2_853f1"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=385800349]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +12,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q7e13")
 
-[node name="GoldLabel" type="Label" parent="."]
+[node name="GoldLabel" type="Label" parent="." unique_id=632719684]
+layout_mode = 0
 offset_left = 12.0
 offset_top = 10.0
 offset_right = 200.0
@@ -20,32 +22,39 @@ theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
 theme_override_font_sizes/font_size = 22
 text = "Gold: 0"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1219293798]
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -60.0
-offset_top = -90.0
-offset_right = 60.0
-offset_bottom = 90.0
+offset_left = -252.0
+offset_top = -160.0
+offset_right = 251.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBoxContainer"]
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=746869207]
 layout_mode = 2
+theme = ExtResource("2_853f1")
 text = "Play"
 
-[node name="ShopButton" type="Button" parent="VBoxContainer"]
+[node name="ShopButton" type="Button" parent="VBoxContainer" unique_id=1207282197]
 layout_mode = 2
+theme = ExtResource("2_853f1")
 text = "Shop"
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer" unique_id=342374843]
 layout_mode = 2
+theme = ExtResource("2_853f1")
 text = "Settings"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=2112303639]
 layout_mode = 2
+theme = ExtResource("2_853f1")
 text = "Quit"
 
 [connection signal="button_up" from="VBoxContainer/PlayButton" to="." method="OnPlayPressed"]

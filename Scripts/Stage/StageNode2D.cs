@@ -12,6 +12,9 @@ public partial class StageNode2D : Node2D
     [Export] Sprite2D background;
     [Export] Node2D pathsContainer;
     [Export] TrainsSpawner trainsSpawner;
+
+    /// <summary>How many paths to generate per stage (1–7; one sprint key each).</summary>
+    [Export(PropertyHint.Range, "1,7,1")] int pathCount = 4;
     #endregion -----------------------------------------------------------------
 
 
@@ -33,6 +36,10 @@ public partial class StageNode2D : Node2D
     readonly List<Pedal> keyLabels = [];
     readonly Queue<string> labelQueue = new();
     readonly ProximityDetection proximityDetection = new();
+
+    // The viewport we subscribed to for resize-driven background refits; cached
+    // so we can unsubscribe safely when this stage leaves the tree.
+    Viewport boundViewport;
 
     // Per-train WagonAttached handlers, removed when this stage leaves the tree
     // so a carried-over train doesn't keep firing into the old (freed) stage.
@@ -57,6 +64,12 @@ public partial class StageNode2D : Node2D
         stage.KeyRegistered += OnKeyRegistered;
         stage.Bump += OnBump;
         stage.Completed += OnCompleted;
+
+        // Make the background cover the whole screen now and on every resize, so
+        // there's never a letterboxed "window in a window".
+        boundViewport = GetViewport();
+        boundViewport.SizeChanged += FitBackground;
+        FitBackground();
     }
 
     public override void _Process(double delta)
@@ -106,34 +119,33 @@ public partial class StageNode2D : Node2D
 
     public void Begin(Train carryoverTrain = null)
     {
-        // The carryover train re-uses path 0001: don't spawn a new train on it,
-        // otherwise the two trains would overlap and bump immediately.
-        trainsSpawner.StartStage(spawnFirstPath: carryoverTrain == null);
+        // Build a grid sized to the current screen and generate paths that fill
+        // it, so the layout adapts to any resolution instead of being hand-placed.
+        Vector2 size = GetViewport().GetVisibleRect().Size;
+        var grid = new Grid(size.X, size.Y);
+        int count = Mathf.Clamp(pathCount, 3, 5);
+        List<Curve2D> curves = PathGenerator.Generate(grid, count);
 
-        // If there's a carryover train from the previous stage, assign it to a new path
+        // Path 0 is reserved for a carryover train (if any); the spawner gives the
+        // remaining paths fresh trains. Don't spawn a second train on path 0.
+        trainsSpawner.StartStage(curves, spawnFirstPath: carryoverTrain == null);
+
         if (carryoverTrain != null)
         {
-            AssignCarryoverTrain(carryoverTrain);
+            AssignCarryoverTrain(carryoverTrain, curves[0]);
         }
     }
 
-    void AssignCarryoverTrain(Train train)
+    void AssignCarryoverTrain(Train train, Curve2D curve)
     {
         // Each stage starts fresh: drop any wagons (and their orbs) the train
         // earned last stage. Their gold was already paid out on arrival.
         train.ClearWagons();
 
-        // Load a new path for the carryover train
-        PackedScene newPathScene = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0001.tscn");
-        PathNode2D newPath = newPathScene.Instantiate<PathNode2D>();
-
-        // Add the path to the stage
+        // Build the reserved path (index 0) in code and hand the train to it.
+        PathNode2D newPath = PathFactory.Build(curve);
         PathsContainer.AddChild(newPath);
-
-        // Move the train to the new path
         newPath.PathModel.AddTrain(train);
-
-        // Register the train with the new path
         RegisterTrain(train, newPath);
     }
 
@@ -238,9 +250,30 @@ public partial class StageNode2D : Node2D
 
     public override void _ExitTree()
     {
+        if (boundViewport != null && GodotObject.IsInstanceValid(boundViewport))
+            boundViewport.SizeChanged -= FitBackground;
+
         foreach (var (train, handler) in wagonSubs)
             train.WagonAttached -= handler;
         wagonSubs.Clear();
+    }
+
+    /// <summary>
+    /// Stretches and centres the background so it fills the whole viewport exactly
+    /// (independent X/Y scale), at any resolution or after a window resize.
+    /// Replaces the fixed position/scale baked into the stage scene.
+    /// </summary>
+    void FitBackground()
+    {
+        if (background?.Texture == null) return;
+
+        Vector2 view = GetViewport().GetVisibleRect().Size;
+        Vector2 tex = background.Texture.GetSize();
+        if (tex.X <= 0 || tex.Y <= 0) return;
+
+        background.Centered = true;
+        background.Scale = new Vector2(view.X / tex.X, view.Y / tex.Y);
+        background.Position = view * 0.5f;
     }
 
     void OnKeyRegistered(string actionKey)
