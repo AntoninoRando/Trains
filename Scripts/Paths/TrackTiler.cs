@@ -118,6 +118,11 @@ public partial class TrackTiler : Node2D
             }
         }
 
+        // The equipped track style: "classic" keeps the per-train identity
+        // colours; any other purchased style paints every rail with its tint.
+        var style = PlayerProfile.TrackStyle;
+        bool classicStyle = style == null || style.Id == "track_classic";
+
         // 2) Instantiate one tinted tile sprite per cell.
         int placed = 0;
         foreach (var kv in masks)
@@ -129,7 +134,9 @@ public partial class TrackTiler : Node2D
                 TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
                 Position = new Vector2(kv.Key.X * Cell, kv.Key.Y * Cell),
                 Rotation = rot,
-                Modulate = BlendColor(cellPaths.GetValueOrDefault(kv.Key), pathColors),
+                Modulate = classicStyle
+                    ? BlendColor(cellPaths.GetValueOrDefault(kv.Key), pathColors)
+                    : style.Tint,
             });
             placed++;
         }

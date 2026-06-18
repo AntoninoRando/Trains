@@ -20,6 +20,15 @@ offset_bottom = 33.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Stage 1"
 
+[node name="GoldLabel" type="Label" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.85, 0.65, 0.12, 1)
+theme_override_font_sizes/font_size = 20
+text = "Gold: 0"
+
 [node name="AroundBorderAnimation" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("Top", "Right", "Bottom", "Left", "Left2")]
 script = ExtResource("5_pbw6q")
 Top = NodePath("Top")
@@ -133,10 +142,11 @@ text = "Exit"
 position = Vector2(576, 342)
 script = ExtResource("1_rgh2o")
 
-[node name="Match" type="Node2D" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "completeAnimation", "matchCamera")]
+[node name="Match" type="Node2D" parent="." node_paths=PackedStringArray("defeat", "stageLabel", "goldLabel", "completeAnimation", "matchCamera")]
 script = ExtResource("3_rgh2o")
 stageScene = ExtResource("5_jw32o")
 defeat = NodePath("../CanvasLayer/DefeatVeil")
 stageLabel = NodePath("../CanvasLayer/StageLabel")
+goldLabel = NodePath("../CanvasLayer/GoldLabel")
 completeAnimation = NodePath("../CanvasLayer/AroundBorderAnimation")
 matchCamera = NodePath("../Camera2D")

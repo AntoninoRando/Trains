@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cu4p65blykxl2"]
+[gd_scene load_steps=6 format=3 uid="uid://cu4p65blykxl2"]
 
 [ext_resource type="Script" uid="uid://5mlm1vbq58fv" path="res://Scripts/Paths/PathNode2D.cs" id="1_3s07r"]
 [ext_resource type="Script" uid="uid://ctnxtb32rne3w" path="res://Scripts/Paths/EndPathArea.cs" id="2_tns2u"]
+[ext_resource type="PackedScene" path="res://Scripts/StageElements/MysticalOrb/MysticalOrbScene.tscn" id="3_orb2"]
 
 [sub_resource type="Curve2D" id="Curve2D_6x7a2"]
 _data = {
@@ -29,3 +30,6 @@ script = ExtResource("2_tns2u")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="End"]
 shape = SubResource("RectangleShape2D_6yiot")
+
+[node name="MysticalOrb" parent="." instance=ExtResource("3_orb2")]
+position = Vector2(448, 600)

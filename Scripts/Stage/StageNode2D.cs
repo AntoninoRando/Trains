@@ -34,6 +34,10 @@ public partial class StageNode2D : Node2D
     readonly Queue<string> labelQueue = new();
     readonly ProximityDetection proximityDetection = new();
 
+    // Per-train WagonAttached handlers, removed when this stage leaves the tree
+    // so a carried-over train doesn't keep firing into the old (freed) stage.
+    readonly List<(Train Train, Action<Wagon> Handler)> wagonSubs = [];
+
 
 
     #region GODOT LIFECYCLE ----------------------------------------------------
@@ -115,6 +119,10 @@ public partial class StageNode2D : Node2D
 
     void AssignCarryoverTrain(Train train)
     {
+        // Each stage starts fresh: drop any wagons (and their orbs) the train
+        // earned last stage. Their gold was already paid out on arrival.
+        train.ClearWagons();
+
         // Load a new path for the carryover train
         PackedScene newPathScene = GD.Load<PackedScene>("res:///Assets/TrainsPaths/0001.tscn");
         PathNode2D newPath = newPathScene.Instantiate<PathNode2D>();
@@ -148,13 +156,91 @@ public partial class StageNode2D : Node2D
         pathNodes.Add((pathNode, action_key));
 
         var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
-        if (trainNode != null) trainNode.Modulate = color;
+        // Identity colour times the equipped livery tint (white = no change), so
+        // trains stay tellable apart while wearing the purchased cosmetic.
+        if (trainNode != null) trainNode.Modulate = color * PlayerProfile.TrainTint;
         var area = trainNode.GetNode<TrainArea>("Area");
+        area.OwnerTrain = train;
         area.BumpedTrain += () => stage.TriggerBump();
         pathNode.End.TrainArrived += stage.OnTrainArrived;
 
+        // Grow a tail car whenever this train picks up a Mystical Orb.
+        Action<Wagon> onWagon = wagon => OnWagonAttached(train, pathNode, wagon);
+        train.WagonAttached += onWagon;
+        wagonSubs.Add((train, onWagon));
+
         labelQueue.Enqueue(action_key);
         TrySpawnLabel(pathNode.PathModel);
+
+        // "Lucky Charm" shop unlock: drop a bonus orb partway along this path.
+        if (PlayerProfile.ExtraOrb) SpawnBonusOrb(pathNode);
+    }
+
+    static readonly PackedScene orbScene =
+        GD.Load<PackedScene>("res://Scripts/StageElements/MysticalOrb/MysticalOrbScene.tscn");
+
+    /// <summary>
+    /// Adds one extra Mystical Orb to a path (the Lucky Charm unlock), sampled
+    /// ~60% along the curve so it sits clear of the orb baked into the path scene.
+    /// Curve coordinates share the path root's space, so the orb is parented to
+    /// the path node at the sampled point.
+    /// </summary>
+    void SpawnBonusOrb(PathNode2D pathNode)
+    {
+        var curve = pathNode.Curve;
+        if (orbScene == null || curve == null || curve.PointCount < 2) return;
+
+        var orb = orbScene.Instantiate<MysticalOrbNode2D>();
+        float length = curve.GetBakedLength();
+        Vector2 point = curve.SampleBaked(length * 0.6f);
+        Vector2 path2DOffset = pathNode.Path2DNode?.Position ?? Vector2.Zero;
+
+        pathNode.AddChild(orb);
+        orb.Position = path2DOffset + point;
+    }
+
+    /// <summary>
+    /// Reacts to a Mystical Orb pickup. The orb fires this from inside a physics
+    /// area callback, so the new collision car is spawned deferred (next idle)
+    /// to avoid mutating the physics world mid-flush.
+    /// </summary>
+    void OnWagonAttached(Train train, PathNode2D pathNode, Wagon wagon)
+    {
+        // Capture the wagon's 1-based place in the line now (it was just appended).
+        int slot = train.Wagons.Count;
+        Callable.From(() => SpawnWagonView(train, pathNode, slot)).CallDeferred();
+    }
+
+    /// <summary>
+    /// Builds the visual car for a coupled wagon, places it on the train's path
+    /// behind the loco, and wires its collision so the now-longer train can be
+    /// bumped along its whole length.
+    /// </summary>
+    void SpawnWagonView(Train train, PathNode2D pathNode, int slot)
+    {
+        if (!IsInstanceValid(pathNode)) return;
+
+        var wagonNode = new WagonNode2D();
+
+        // Match the car to its train's identity colour.
+        var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
+        if (trainNode != null) wagonNode.SetBodyColor(trainNode.Modulate);
+
+        pathNode.AttachWagon(wagonNode, slot);
+
+        // The car's area is created once it enters the tree (in AttachWagon).
+        if (wagonNode.Area != null)
+        {
+            wagonNode.Area.OwnerTrain = train;
+            wagonNode.Area.BumpedTrain += () => stage.TriggerBump();
+        }
+    }
+
+    public override void _ExitTree()
+    {
+        foreach (var (train, handler) in wagonSubs)
+            train.WagonAttached -= handler;
+        wagonSubs.Clear();
     }
 
     void OnKeyRegistered(string actionKey)

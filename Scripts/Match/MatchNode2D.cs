@@ -6,6 +6,7 @@ public partial class MatchNode2D : Node2D
     [Export] PackedScene stageScene;
     [Export] Node defeat;
     [Export] Label stageLabel;
+    [Export] Label goldLabel;
     [Export] CompleteAnimation completeAnimation;
     [Export] StageCamera matchCamera;
     #endregion -----------------------------------------------------------------
@@ -44,11 +45,26 @@ public partial class MatchNode2D : Node2D
     #region GODOT LIFECYCLE ----------------------------------------------------
     public override void _Ready()
     {
+        // Warm the art library on background threads before the first stage builds.
+        GameAssets.Preload();
+
         ((IMouldable)match).SetView(this);
+
+        // Apply the persistent "Richer Cargo" upgrades bought in the shop.
+        match.BaseArrivalGold += PlayerProfile.BaseGoldBonus;
+
         defeat.GetNode<Button>("Container/Retry").Pressed += OnRetry;
         defeat.GetNode<Button>("Container/Exit").Pressed += OnExit;
         matchCamera.TransitionComplete += match.Start;
         match.Started += OnMatchStarted;
+
+        // Keep the gold HUD in sync with the wallet.
+        if (goldLabel != null)
+        {
+            match.Wallet.Changed += gold => goldLabel.Text = $"Gold: {gold}";
+            goldLabel.Text = $"Gold: {match.Wallet.Gold}";
+        }
+
         match.Start();
     }
     #endregion -----------------------------------------------------------------
@@ -98,6 +114,9 @@ public partial class MatchNode2D : Node2D
     {
         match.WinningTrain = train;
         winnerTrain = train;
+
+        // Pay out: base reward + any Mystical Orbs carried to the end.
+        match.RewardArrival(train);
 
         // 1. Overlay the winning train: slight clockwise rotation + zoom.
         PlayWinnerOverlay(((IMouldable)train).GetView<TrainNode2D>());
@@ -160,6 +179,7 @@ public partial class MatchNode2D : Node2D
     void OnBump()
     {
         match.Lose();
+        BankEarnings();
         defeat.GetNode<Control>("Container").Visible = true;
     }
 
@@ -167,6 +187,7 @@ public partial class MatchNode2D : Node2D
     {
         Log.Info("Retrying match");
         match.Interrupt();
+        BankEarnings();
         GetTree().ReloadCurrentScene();
     }
 
@@ -174,6 +195,23 @@ public partial class MatchNode2D : Node2D
     {
         Log.Info("Exiting to main menu");
         match.Interrupt();
+        BankEarnings();
         GetTree().ChangeSceneToFile("res://Scenes/MainMenu.tscn");
+    }
+
+    /// <summary>
+    /// Moves the gold earned this run from the per-match <see cref="Wallet"/>
+    /// into the persistent <see cref="PlayerProfile"/>. Guarded so the defeat
+    /// screen's Retry/Exit buttons can't bank the same earnings twice.
+    /// </summary>
+    bool earningsBanked;
+    void BankEarnings()
+    {
+        if (earningsBanked) return;
+        earningsBanked = true;
+
+        int earned = match.Wallet.Gold;
+        PlayerProfile.AddGold(earned);
+        Log.Info($"Banked {earned} gold to profile (total {PlayerProfile.Gold}).");
     }
 }

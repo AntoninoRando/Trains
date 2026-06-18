@@ -11,6 +11,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q7e13")
 
+[node name="GoldLabel" type="Label" parent="."]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 22
+text = "Gold: 0"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 anchor_left = 0.5
@@ -18,14 +27,18 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -60.0
-offset_top = -60.0
+offset_top = -90.0
 offset_right = 60.0
-offset_bottom = 60.0
+offset_bottom = 90.0
 alignment = 1
 
 [node name="PlayButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Play"
+
+[node name="ShopButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Shop"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -36,5 +49,6 @@ layout_mode = 2
 text = "Quit"
 
 [connection signal="button_up" from="VBoxContainer/PlayButton" to="." method="OnPlayPressed"]
+[connection signal="button_up" from="VBoxContainer/ShopButton" to="." method="OnShopPressed"]
 [connection signal="button_up" from="VBoxContainer/SettingsButton" to="." method="OnSettingsPressed"]
 [connection signal="button_up" from="VBoxContainer/QuitButton" to="." method="OnQuitPressed"]

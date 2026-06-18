@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://pywgdv44uks1"]
+[gd_scene load_steps=7 format=3 uid="uid://pywgdv44uks1"]
 
 [ext_resource type="Script" uid="uid://5mlm1vbq58fv" path="res://Scripts/Paths/PathNode2D.cs" id="1_evev2"]
 [ext_resource type="Script" uid="uid://ctnxtb32rne3w" path="res://Scripts/Paths/EndPathArea.cs" id="1_q6yku"]
 [ext_resource type="PackedScene" uid="uid://kxh0v1nwun6r" path="res://Scripts/StageElements/Mine/MineScene.tscn" id="3_2mb47"]
+[ext_resource type="PackedScene" path="res://Scripts/StageElements/MysticalOrb/MysticalOrbScene.tscn" id="4_orb1"]
 
 [sub_resource type="Curve2D" id="Curve2D_6x7a2"]
 _data = {
@@ -32,3 +33,6 @@ shape = SubResource("RectangleShape2D_6yiot")
 
 [node name="Mine" parent="." instance=ExtResource("3_2mb47")]
 position = Vector2(726, 66)
+
+[node name="MysticalOrb" parent="." instance=ExtResource("4_orb1")]
+position = Vector2(200, 192)
