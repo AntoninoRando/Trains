@@ -139,6 +139,39 @@ public static class GameSettings
 
 
 
+    #region GRID SIZE ----------------------------------------------------------
+    /// <summary>
+    /// On-screen size (px) of one grid block for the current resolution. Bigger
+    /// screens use bigger blocks so the track and trains don't look tiny — the
+    /// fixed 64px block only suited the original ~720p build.
+    ///
+    /// TUNABLE: adjust this table to taste. Lower values pack more, smaller
+    /// blocks onto the screen; higher values give fewer, larger blocks. 64 is the
+    /// track tile art size, so it renders crispest; other values scale the tiles.
+    /// </summary>
+    public static int GridCellSize
+    {
+        get
+        {
+            EnsureLoaded();
+            return CurrentResolution.Height switch
+            {
+                <= 720  => 64,
+                <= 900  => 80,
+                <= 1080 => 96,
+                <= 1440 => 128,
+                _       => 160,
+            };
+        }
+    }
+
+    /// <summary>How much to scale the 64px track art (and trains) so they match
+    /// <see cref="GridCellSize"/>.</summary>
+    public static float GridScale => GridCellSize / 64f;
+    #endregion -----------------------------------------------------------------
+
+
+
     #region UI SCALING ---------------------------------------------------------
     /// <summary>The resolution the menu / shop Control scenes were laid out for.
     /// Used as the base when scaling them up to the chosen window size.</summary>

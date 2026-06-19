@@ -40,10 +40,13 @@ public static class PathFactory
         // on-screen edge node just before it (point count is always >= 3).
         int finishIndex = Mathf.Max(0, curve.PointCount - 2);
         end.Position = curve.GetPointPosition(finishIndex);
+        // Scale the finish trigger with the block size so it stays proportional
+        // to the (now larger) trains and track on big resolutions.
+        float endSize = EndShapeSize * GameSettings.GridScale;
         end.AddChild(new CollisionShape2D
         {
             Name = "CollisionShape2D",
-            Shape = new RectangleShape2D { Size = new Vector2(EndShapeSize, EndShapeSize) },
+            Shape = new RectangleShape2D { Size = new Vector2(endSize, endSize) },
         });
         root.AddChild(end);
 

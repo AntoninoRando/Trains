@@ -38,8 +38,9 @@ public partial class PathNode2D : Node2D
 
 
     #region WAGONS -------------------------------------------------------------
-    /// <summary>Distance, in curve pixels, between consecutive cars.</summary>
-    const float WagonSpacing = 42f;
+    /// <summary>Distance, in curve pixels, between consecutive cars. Scales with
+    /// the resolution's block size so cars stay proportionally spaced.</summary>
+    static float WagonSpacing => 42f * GameSettings.GridScale;
 
     /// <summary>Trailing followers; each rides this path a fixed distance behind
     /// the loco (slot 1 is the first wagon, slot 2 the next, and so on).</summary>

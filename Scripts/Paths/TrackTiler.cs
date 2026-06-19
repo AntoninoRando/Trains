@@ -29,7 +29,11 @@ using Godot;
 /// </summary>
 public partial class TrackTiler : Node2D
 {
-    const int Cell = TrackTileset.TileSize; // 64
+    /// <summary>World size of one grid cell. The grid uses this to space its
+    /// nodes (a multiple of the 64px tile art), so the stage sets it to match
+    /// <see cref="GameSettings.GridCellSize"/>. Tiles are scaled to fill it.</summary>
+    public int CellSize { get; set; } = TrackTileset.TileSize; // 64 by default
+
     const int N = TrackTileset.N, E = TrackTileset.E, S = TrackTileset.S, W = TrackTileset.W;
 
     TrackTileset tileset;
@@ -128,11 +132,13 @@ public partial class TrackTiler : Node2D
         foreach (var kv in masks)
         {
             if (!tileset.TryGet(kv.Value, out var tex, out float rot)) continue;
+            float tileScale = (float)CellSize / TrackTileset.TileSize;
             AddChild(new Sprite2D
             {
                 Texture = tex,
                 TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
-                Position = new Vector2(kv.Key.X * Cell, kv.Key.Y * Cell),
+                Position = new Vector2(kv.Key.X * CellSize, kv.Key.Y * CellSize),
+                Scale = new Vector2(tileScale, tileScale),
                 Rotation = rot,
                 Modulate = classicStyle
                     ? BlendColor(cellPaths.GetValueOrDefault(kv.Key), pathColors)
@@ -162,8 +168,8 @@ public partial class TrackTiler : Node2D
     }
 
     // ----------------------------------------------------------- grid helpers
-    static Vector2I ToCell(Vector2 local)
-        => new(Mathf.RoundToInt(local.X / Cell), Mathf.RoundToInt(local.Y / Cell));
+    Vector2I ToCell(Vector2 local)
+        => new(Mathf.RoundToInt(local.X / CellSize), Mathf.RoundToInt(local.Y / CellSize));
 
     /// Connect two cells. We move along X then along Y, so a straight segment is
     /// rasterised exactly and an unexpected diagonal degrades to a clean L.

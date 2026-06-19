@@ -41,6 +41,9 @@ public partial class StageNode2D : Node2D
     // so we can unsubscribe safely when this stage leaves the tree.
     Viewport boundViewport;
 
+    // The track renderer; its cell size is set per-stage to match the grid.
+    TrackTiler trackTiler;
+
     // Per-train WagonAttached handlers, removed when this stage leaves the tree
     // so a carried-over train doesn't keep firing into the old (freed) stage.
     readonly List<(Train Train, Action<Wagon> Handler)> wagonSubs = [];
@@ -55,7 +58,7 @@ public partial class StageNode2D : Node2D
         // Render the paths as a tiled railroad track. Added as the first child of
         // the paths container so its tiles draw beneath the trains (which live in
         // the path nodes added afterwards) yet above the stage background.
-        var trackTiler = new TrackTiler { Name = "TrackTiler" };
+        trackTiler = new TrackTiler { Name = "TrackTiler" };
         pathsContainer.AddChild(trackTiler);
         pathsContainer.MoveChild(trackTiler, 0);
 
@@ -122,7 +125,11 @@ public partial class StageNode2D : Node2D
         // Build a grid sized to the current screen and generate paths that fill
         // it, so the layout adapts to any resolution instead of being hand-placed.
         Vector2 size = GetViewport().GetVisibleRect().Size;
-        var grid = new Grid(size.X, size.Y);
+        // Block size scales with the resolution so the grid isn't tiny on big
+        // screens; the track renderer uses the same cell size as the grid.
+        int cell = GameSettings.GridCellSize;
+        trackTiler.CellSize = cell;
+        var grid = new Grid(size.X, size.Y, cell);
         int count = Mathf.Clamp(pathCount, 3, 5);
         List<Curve2D> curves = PathGenerator.Generate(grid, count);
 
@@ -170,7 +177,13 @@ public partial class StageNode2D : Node2D
         var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
         // Identity colour times the equipped livery tint (white = no change), so
         // trains stay tellable apart while wearing the purchased cosmetic.
-        if (trainNode != null) trainNode.Modulate = color * PlayerProfile.TrainTint;
+        if (trainNode != null)
+        {
+            trainNode.Modulate = color * PlayerProfile.TrainTint;
+            // Scale the train to the resolution's block size so it matches the
+            // track. Set on the root, so it survives the winner-overlay reparent.
+            trainNode.Scale = Vector2.One * GameSettings.GridScale;
+        }
         var area = trainNode.GetNode<TrainArea>("Area");
         area.OwnerTrain = train;
         area.BumpedTrain += () => stage.TriggerBump();
@@ -215,6 +228,7 @@ public partial class StageNode2D : Node2D
         if (orbScene == null || curve == null || curve.PointCount < 2) return;
 
         var orb = orbScene.Instantiate<MysticalOrbNode2D>();
+        orb.Scale = Vector2.One * GameSettings.GridScale;
         float length = curve.GetBakedLength();
         Vector2 point = curve.SampleBaked(length * 0.6f);
         Vector2 path2DOffset = pathNode.Path2DNode?.Position ?? Vector2.Zero;
@@ -236,6 +250,7 @@ public partial class StageNode2D : Node2D
         if (gateScene == null || curve == null || curve.PointCount < 2) return;
 
         var gate = gateScene.Instantiate<GateNode2D>();
+        gate.Scale = Vector2.One * GameSettings.GridScale;
         gate.OpenBeats = 2 + PlayerProfile.GateOpenBonus;
         gate.ClosedBeats = 2;
         gate.StartsOpen = true;
@@ -260,7 +275,7 @@ public partial class StageNode2D : Node2D
         if (smokeScene == null || curve == null || curve.PointCount < 2) return;
 
         var smoke = smokeScene.Instantiate<SmokeNode2D>();
-        smoke.Radius = Mathf.Max(36f, 72f - PlayerProfile.SmokeRadiusReduction);
+        smoke.Radius = Mathf.Max(36f, 72f - PlayerProfile.SmokeRadiusReduction) * GameSettings.GridScale;
 
         float length = curve.GetBakedLength();
         Vector2 point = curve.SampleBaked(length * 0.72f);
@@ -292,6 +307,8 @@ public partial class StageNode2D : Node2D
         if (!IsInstanceValid(pathNode)) return;
 
         var wagonNode = new WagonNode2D();
+        // Match the car to the resolution's block size, like its loco.
+        wagonNode.Scale = Vector2.One * GameSettings.GridScale;
 
         // Match the car to its train's identity colour.
         var trainNode = ((IMouldable)train).GetView<TrainNode2D>();
