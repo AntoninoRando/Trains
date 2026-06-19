@@ -174,6 +174,12 @@ public static class PlayerProfile
     /// <summary>Extra beats a gate stays open, from gate upgrades.</summary>
     public static int GateOpenBonus => (int)SumEffect("gate_open");
 
+    /// <summary>Smoke clouds are placed on each path when this is owned.</summary>
+    public static bool SmokeZones => IsUnlocked("element_smoke");
+
+    /// <summary>Pixels shaved off a smoke cloud's radius, from smoke upgrades.</summary>
+    public static int SmokeRadiusReduction => (int)SumEffect("smoke_shrink");
+
     /// <summary>Tint multiplied onto every train (white = default livery).</summary>
     public static Color TrainTint => ShopCatalog.Get(EquippedSkin)?.Tint ?? Colors.White;
 

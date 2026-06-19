@@ -14,7 +14,7 @@ public class Match : IMouldable
     readonly Wallet wallet = new(); public Wallet Wallet => wallet;
 
     /// <summary>Gold earned just for getting a train to the end.</summary>
-    public int BaseArrivalGold = 5;
+    public int BaseArrivalGold = 1000;
 
     public event Action Started;
     public event Action Ended;

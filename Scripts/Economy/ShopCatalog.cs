@@ -42,6 +42,11 @@ public static class ShopCatalog
             Cost = 150, Category = ShopCategory.Upgrade, Effect = "gate_open", Value = 1,
             Prereq = "element_rhythm_gates" },
 
+        new ShopItem { Id = "upgrade_smoke_shrink_1", Name = "Fog Lamps",
+            Description = "Smoke clouds are smaller, so a train is hidden for less of the track.",
+            Cost = 140, Category = ShopCategory.Upgrade, Effect = "smoke_shrink", Value = 24,
+            Prereq = "element_smoke" },
+
         // ---- Stage elements: change what appears in a run -----------------
         new ShopItem { Id = "element_golden_orb", Name = "Golden Orbs",
             Description = "Orbs turn gold and pay an extra +15 gold each.",
@@ -52,6 +57,9 @@ public static class ShopCatalog
         new ShopItem { Id = "element_rhythm_gates", Name = "Rhythm Gates",
             Description = "Beat-timed gates appear on every path: time your sprint to roll through while they're open.",
             Cost = 200, Category = ShopCategory.StageElement, Effect = "rhythm_gates" },
+        new ShopItem { Id = "element_smoke", Name = "Smoke Screens",
+            Description = "Drifting smoke clouds sit on every path and hide any train that rolls through them.",
+            Cost = 180, Category = ShopCategory.StageElement, Effect = "smoke" },
 
         // ---- Tracks: equippable rail styles -------------------------------
         new ShopItem { Id = "track_classic", Name = "Classic Rails",

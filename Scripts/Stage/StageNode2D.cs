@@ -189,6 +189,9 @@ public partial class StageNode2D : Node2D
 
         // "Rhythm Gates" shop unlock: drop a beat-timed gate partway along this path.
         if (PlayerProfile.RhythmGates) SpawnGate(pathNode);
+
+        // "Smoke Screens" shop unlock: drop an obscuring smoke cloud on this path.
+        if (PlayerProfile.SmokeZones) SpawnSmoke(pathNode);
     }
 
     static readonly PackedScene orbScene =
@@ -196,6 +199,9 @@ public partial class StageNode2D : Node2D
 
     static readonly PackedScene gateScene =
         GD.Load<PackedScene>("res://Scripts/StageElements/Gate/GateScene.tscn");
+
+    static readonly PackedScene smokeScene =
+        GD.Load<PackedScene>("res://Scripts/StageElements/Smoke/SmokeScene.tscn");
 
     /// <summary>
     /// Adds one extra Mystical Orb to a path (the Lucky Charm unlock), sampled
@@ -240,6 +246,28 @@ public partial class StageNode2D : Node2D
 
         pathNode.AddChild(gate);
         gate.Position = path2DOffset + point;
+    }
+
+    /// <summary>
+    /// Drops one obscuring Smoke cloud (the "Smoke Screens" unlock) ~72% along the
+    /// path, clear of the gate (~40%) and orb (~60%). The cloud draws on top of the
+    /// trains, hiding any that roll through it. The "Fog Lamps" upgrade shrinks the
+    /// cloud for the player who buys it.
+    /// </summary>
+    void SpawnSmoke(PathNode2D pathNode)
+    {
+        var curve = pathNode.Curve;
+        if (smokeScene == null || curve == null || curve.PointCount < 2) return;
+
+        var smoke = smokeScene.Instantiate<SmokeNode2D>();
+        smoke.Radius = Mathf.Max(36f, 72f - PlayerProfile.SmokeRadiusReduction);
+
+        float length = curve.GetBakedLength();
+        Vector2 point = curve.SampleBaked(length * 0.72f);
+        Vector2 path2DOffset = pathNode.Path2DNode?.Position ?? Vector2.Zero;
+
+        pathNode.AddChild(smoke);
+        smoke.Position = path2DOffset + point;
     }
 
     /// <summary>
