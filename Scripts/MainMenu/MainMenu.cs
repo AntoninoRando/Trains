@@ -8,6 +8,9 @@ public partial class MainMenu : Control
         // The main menu is the first scene loaded, so this runs once on boot.
         GameSettings.Apply();
 
+        // Scale this menu up to the window so it stays readable at high resolutions.
+        GameSettings.EnableUiScaling(GetWindow());
+
         // Show the player's persistent gold so the shop's prices make sense.
         var goldLabel = GetNodeOrNull<Label>("GoldLabel");
         if (goldLabel != null) goldLabel.Text = $"Gold: {PlayerProfile.Gold}";

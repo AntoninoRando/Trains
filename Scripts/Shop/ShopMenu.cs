@@ -16,6 +16,8 @@ public partial class ShopMenu : Control
     #region GODOT LIFECYCLE ----------------------------------------------------
     public override void _Ready()
     {
+        // Scale the shop up to the window so it stays readable at high resolutions.
+        GameSettings.EnableUiScaling(GetWindow());
         BuildChrome();
         Refresh();
     }

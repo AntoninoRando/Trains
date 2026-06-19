@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d30r787foc811" path="res://Scripts/Stage/StageNode2D.cs" id="1_hece6"]
 [ext_resource type="Script" uid="uid://cm5mumqcqib1i" path="res://Scripts/Stage/TrainsSpawner.cs" id="2_cvjmr"]
-[ext_resource type="Texture2D" uid="uid://dld5sv3oklg78" path="res://Assets/OfStages/Caves/Backgrounds/Pixel-Art-Cave-Cover.png" id="2_hece6"]
+[ext_resource type="Texture2D" uid="uid://bk6u2k34aalh0" path="res://Assets/OfStages/Caves/Backgrounds/Example.png" id="2_hece6"]
 
 [node name="Stage" type="Node2D" unique_id=1216399516 node_paths=PackedStringArray("background", "pathsContainer", "trainsSpawner")]
 script = ExtResource("1_hece6")

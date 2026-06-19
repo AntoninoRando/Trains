@@ -41,6 +41,12 @@ public partial class StageCamera : Camera2D
     public override void _Ready()
     {
         boundViewport = GetViewport();
+
+        // Gameplay renders 1:1 (native), undoing the menus' UI scaling, so the
+        // viewport reports the true window size — the path grid and this camera
+        // depend on it. Done before the first viewport read below.
+        GameSettings.DisableUiScaling(GetWindow());
+
         // Centre the camera on the viewport so each stage's local (0,0)..(size)
         // region maps 1:1 to the screen at any resolution. The scene's design-time
         // position was hard-coded for the old 1152x648 build, which shifted the

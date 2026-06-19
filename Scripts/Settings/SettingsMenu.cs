@@ -30,6 +30,10 @@ public partial class SettingsMenu : Control
 
     public override void _Ready()
     {
+        // As a standalone screen, scale up to the window so it's readable at high
+        // resolutions. As a pause overlay, leave gameplay's native scaling alone.
+        if (!OverlayMode) GameSettings.EnableUiScaling(GetWindow());
+
         resolutionOption = GetNode<OptionButton>("VBoxContainer/ResolutionRow/ResolutionOption");
         modeOption = GetNode<OptionButton>("VBoxContainer/ModeRow/ModeOption");
         vsyncCheck = GetNode<CheckButton>("VBoxContainer/VSyncRow/VSyncCheck");

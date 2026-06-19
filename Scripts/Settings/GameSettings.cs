@@ -139,6 +139,38 @@ public static class GameSettings
 
 
 
+    #region UI SCALING ---------------------------------------------------------
+    /// <summary>The resolution the menu / shop Control scenes were laid out for.
+    /// Used as the base when scaling them up to the chosen window size.</summary>
+    public static readonly Vector2I UiBaseSize = new(1152, 648);
+
+    /// <summary>
+    /// Scales a Control scene (main menu, shop, standalone settings) to the window
+    /// so it stays readable at high resolutions. Uses <c>canvas_items</c> stretch
+    /// with an expanding aspect, so the UI fills the screen without letterbox bars.
+    /// Gameplay must NOT use this — see <see cref="DisableUiScaling"/>.
+    /// </summary>
+    public static void EnableUiScaling(Window window)
+    {
+        if (window == null) return;
+        window.ContentScaleMode = Window.ContentScaleModeEnum.CanvasItems;
+        window.ContentScaleAspect = Window.ContentScaleAspectEnum.Expand;
+        window.ContentScaleSize = UiBaseSize;
+    }
+
+    /// <summary>
+    /// Restores 1:1 native rendering (used by gameplay) so the viewport reports
+    /// the true window size and the dynamic path grid fills the real screen.
+    /// </summary>
+    public static void DisableUiScaling(Window window)
+    {
+        if (window == null) return;
+        window.ContentScaleMode = Window.ContentScaleModeEnum.Disabled;
+    }
+    #endregion -----------------------------------------------------------------
+
+
+
     #region APPLY --------------------------------------------------------------
     /// <summary>Pushes the current settings to the live window.</summary>
     public static void Apply()
