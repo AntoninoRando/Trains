@@ -186,10 +186,16 @@ public partial class StageNode2D : Node2D
 
         // "Lucky Charm" shop unlock: drop a bonus orb partway along this path.
         if (PlayerProfile.ExtraOrb) SpawnBonusOrb(pathNode);
+
+        // "Rhythm Gates" shop unlock: drop a beat-timed gate partway along this path.
+        if (PlayerProfile.RhythmGates) SpawnGate(pathNode);
     }
 
     static readonly PackedScene orbScene =
         GD.Load<PackedScene>("res://Scripts/StageElements/MysticalOrb/MysticalOrbScene.tscn");
+
+    static readonly PackedScene gateScene =
+        GD.Load<PackedScene>("res://Scripts/StageElements/Gate/GateScene.tscn");
 
     /// <summary>
     /// Adds one extra Mystical Orb to a path (the Lucky Charm unlock), sampled
@@ -209,6 +215,31 @@ public partial class StageNode2D : Node2D
 
         pathNode.AddChild(orb);
         orb.Position = path2DOffset + point;
+    }
+
+    /// <summary>
+    /// Drops one beat-timed Gate (the "Rhythm Gates" unlock) ~40% along the path,
+    /// clear of the orb baked in at ~60%. Every lane's gate shares the same rhythm
+    /// and phase — driven by the global <see cref="Metronome"/> — so the race stays
+    /// fair: all trains meet an open (or shut) gate at the same beat. The "Gate
+    /// Greaser" upgrade lengthens the open window for the player who buys it.
+    /// </summary>
+    void SpawnGate(PathNode2D pathNode)
+    {
+        var curve = pathNode.Curve;
+        if (gateScene == null || curve == null || curve.PointCount < 2) return;
+
+        var gate = gateScene.Instantiate<GateNode2D>();
+        gate.OpenBeats = 2 + PlayerProfile.GateOpenBonus;
+        gate.ClosedBeats = 2;
+        gate.StartsOpen = true;
+
+        float length = curve.GetBakedLength();
+        Vector2 point = curve.SampleBaked(length * 0.4f);
+        Vector2 path2DOffset = pathNode.Path2DNode?.Position ?? Vector2.Zero;
+
+        pathNode.AddChild(gate);
+        gate.Position = path2DOffset + point;
     }
 
     /// <summary>

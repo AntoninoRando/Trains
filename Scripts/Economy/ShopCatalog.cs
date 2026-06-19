@@ -37,6 +37,11 @@ public static class ShopCatalog
             Cost = 160, Category = ShopCategory.Upgrade, Effect = "orb_value", Value = 10,
             Prereq = "upgrade_orb_1" },
 
+        new ShopItem { Id = "upgrade_gate_open_1", Name = "Gate Greaser",
+            Description = "Rhythm Gates stay open one extra beat.",
+            Cost = 150, Category = ShopCategory.Upgrade, Effect = "gate_open", Value = 1,
+            Prereq = "element_rhythm_gates" },
+
         // ---- Stage elements: change what appears in a run -----------------
         new ShopItem { Id = "element_golden_orb", Name = "Golden Orbs",
             Description = "Orbs turn gold and pay an extra +15 gold each.",
@@ -44,6 +49,9 @@ public static class ShopCatalog
         new ShopItem { Id = "element_lucky_charm", Name = "Lucky Charm",
             Description = "An extra Mystical Orb appears on every path.",
             Cost = 260, Category = ShopCategory.StageElement, Effect = "extra_orb" },
+        new ShopItem { Id = "element_rhythm_gates", Name = "Rhythm Gates",
+            Description = "Beat-timed gates appear on every path: time your sprint to roll through while they're open.",
+            Cost = 200, Category = ShopCategory.StageElement, Effect = "rhythm_gates" },
 
         // ---- Tracks: equippable rail styles -------------------------------
         new ShopItem { Id = "track_classic", Name = "Classic Rails",

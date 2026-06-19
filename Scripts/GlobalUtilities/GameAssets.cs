@@ -21,6 +21,7 @@ public static class GameAssets
 {
     #region ASSET PATHS --------------------------------------------------------
     public const string OrbFrames    = "res://Assets/OfStageElements/MysticalOrb/orb.tres";
+    public const string GateTickSound = "res://Assets/OfStageElements/Gate/gate_tick.wav";
     public const string WagonTexture = "res://Assets/OfTrains/Wagon/wagon.png";
     public const string RailStraight = "res://Assets/OfPaths/Rails/rail_straight.png";
     public const string RailCorner   = "res://Assets/OfPaths/Rails/rail_corner.png";
@@ -30,7 +31,7 @@ public static class GameAssets
 
     static readonly string[] AllPaths =
     {
-        OrbFrames, WagonTexture,
+        OrbFrames, GateTickSound, WagonTexture,
         RailStraight, RailCorner, RailTee, RailCross, RailEnd,
     };
     #endregion -----------------------------------------------------------------
@@ -90,6 +91,9 @@ public static class GameAssets
 
     #region TYPED ACCESSORS ----------------------------------------------------
     public static SpriteFrames Orb() => Get<SpriteFrames>(OrbFrames);
+
+    /// <summary>The metronome click played on every beat while gates are active.</summary>
+    public static AudioStream GateTick() => Get<AudioStream>(GateTickSound);
 
     public static Texture2D Wagon() => Get<Texture2D>(WagonTexture);
 

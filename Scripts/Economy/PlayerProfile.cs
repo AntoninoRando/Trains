@@ -168,6 +168,12 @@ public static class PlayerProfile
     /// <summary>An extra orb is spawned on each path when this is owned.</summary>
     public static bool ExtraOrb => IsUnlocked("element_lucky_charm");
 
+    /// <summary>Beat-timed gates are placed on each path when this is owned.</summary>
+    public static bool RhythmGates => IsUnlocked("element_rhythm_gates");
+
+    /// <summary>Extra beats a gate stays open, from gate upgrades.</summary>
+    public static int GateOpenBonus => (int)SumEffect("gate_open");
+
     /// <summary>Tint multiplied onto every train (white = default livery).</summary>
     public static Color TrainTint => ShopCatalog.Get(EquippedSkin)?.Tint ?? Colors.White;
 
